@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string>application/x-apple-diskimage</string>
+	<string>audio/mpeg</string>
+	<string>audio/mp3</string>
+	<string>audio/x-mpeg</string>
+	<string>audio/x-mp3</string>
+	<string>audio/mpeg3</string>
+	<string>video/mp4v-es</string>
+	<string>audio/mp4</string>
+	<string>video/3gpp</string>
+	<string>audio/3gpp</string>
+	<string>application/octet-stream</string>
+	<string>application/zip</string>
+	<string>application/gzip</string>
+	<string>application/bzip2</string>
+	<string>application/tar</string>
+</array>
+</plist>

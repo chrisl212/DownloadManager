@@ -8,23 +8,48 @@
 
 #import "AppDelegate.h"
 #import "ACBrowserViewController.h"
+#import "ACDownloadTypesController.h"
+#import "ACFileNavigatorKit.framework/Headers/ACRootViewController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
+    NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dlTypesPath])
+    {
+        [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DownloadTypes" ofType:@"plist"] toPath:dlTypesPath error:nil];
+        [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"MimeTypes" ofType:@"plist"] toPath:mimeTypesPath error:nil];
+    }
+    
     CGRect applicationFrame = [[UIScreen mainScreen] bounds];
     self.window = [[UIWindow alloc] initWithFrame:applicationFrame];
     
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    [tabBarController.tabBar setTranslucent:NO];
+    
+    //each controller needs its own nav controller (other way was tested, failed)
     
     ACBrowserViewController *browserController = [[ACBrowserViewController alloc] init];
-    
-    tabBarController.viewControllers = @[browserController];
-    
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:tabBarController];
-    
-    self.window.rootViewController = navigationController;
+    UINavigationController *browserNavController = [[UINavigationController alloc] initWithRootViewController:browserController];
+    [browserNavController.navigationBar setTranslucent:NO];
+    browserNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Web" image:nil tag:0];
+
+    ACDownloadTypesController *downloadTypes = [[ACDownloadTypesController alloc] initWithStyle:UITableViewStyleGrouped];
+    UINavigationController *downloadTypesNavController = [[UINavigationController alloc] initWithRootViewController:downloadTypes];
+    [downloadTypesNavController.navigationBar setTranslucent:NO];
+    downloadTypesNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:nil tag:1];
+
+    ACRootViewController *downloadsViewController = [[ACRootViewController alloc] init];
+    UINavigationController *downloadsNavController = [[UINavigationController alloc] initWithRootViewController:downloadsViewController];
+    [downloadsNavController.navigationBar setTranslucent:NO];
+    downloadsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemDownloads tag:2];
+
+    tabBarController.viewControllers = @[browserNavController, downloadsNavController, downloadTypesNavController];
+
+    self.window.rootViewController = tabBarController;
     
     [self.window makeKeyAndVisible];
     
