@@ -9,22 +9,10 @@
 /* Begin PBXBuildFile section */
 		6316126A1AB8D29A006EA71C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 631612691AB8D29A006EA71C /* main.m */; };
 		6316126D1AB8D29B006EA71C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316126C1AB8D29B006EA71C /* AppDelegate.m */; };
-		631612701AB8D29B006EA71C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316126F1AB8D29B006EA71C /* ViewController.m */; };
-		631612731AB8D29C006EA71C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 631612711AB8D29C006EA71C /* Main.storyboard */; };
 		631612751AB8D29E006EA71C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 631612741AB8D29E006EA71C /* Images.xcassets */; };
 		631612781AB8D29E006EA71C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 631612761AB8D29E006EA71C /* LaunchScreen.xib */; };
-		631612841AB8D2A3006EA71C /* Download_ManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 631612831AB8D2A3006EA71C /* Download_ManagerTests.m */; };
+		6316128F1AB8D49B006EA71C /* ACBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316128E1AB8D49B006EA71C /* ACBrowserViewController.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		6316127E1AB8D2A3006EA71C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6316125C1AB8D296006EA71C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 631612631AB8D297006EA71C;
-			remoteInfo = "Download Manager";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		631612641AB8D299006EA71C /* Download Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Download Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -32,25 +20,14 @@
 		631612691AB8D29A006EA71C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6316126B1AB8D29A006EA71C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6316126C1AB8D29B006EA71C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		6316126E1AB8D29B006EA71C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		6316126F1AB8D29B006EA71C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		631612721AB8D29C006EA71C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		631612741AB8D29E006EA71C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		631612771AB8D29E006EA71C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		6316127D1AB8D2A3006EA71C /* Download ManagerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Download ManagerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		631612821AB8D2A3006EA71C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		631612831AB8D2A3006EA71C /* Download_ManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Download_ManagerTests.m; sourceTree = "<group>"; };
+		6316128D1AB8D49B006EA71C /* ACBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACBrowserViewController.h; sourceTree = "<group>"; };
+		6316128E1AB8D49B006EA71C /* ACBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACBrowserViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		631612611AB8D297006EA71C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6316127A1AB8D2A3006EA71C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -64,7 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				631612661AB8D299006EA71C /* Download Manager */,
-				631612801AB8D2A3006EA71C /* Download ManagerTests */,
 				631612651AB8D299006EA71C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -73,7 +49,6 @@
 			isa = PBXGroup;
 			children = (
 				631612641AB8D299006EA71C /* Download Manager.app */,
-				6316127D1AB8D2A3006EA71C /* Download ManagerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,9 +58,8 @@
 			children = (
 				6316126B1AB8D29A006EA71C /* AppDelegate.h */,
 				6316126C1AB8D29B006EA71C /* AppDelegate.m */,
-				6316126E1AB8D29B006EA71C /* ViewController.h */,
-				6316126F1AB8D29B006EA71C /* ViewController.m */,
-				631612711AB8D29C006EA71C /* Main.storyboard */,
+				6316128D1AB8D49B006EA71C /* ACBrowserViewController.h */,
+				6316128E1AB8D49B006EA71C /* ACBrowserViewController.m */,
 				631612741AB8D29E006EA71C /* Images.xcassets */,
 				631612761AB8D29E006EA71C /* LaunchScreen.xib */,
 				631612671AB8D299006EA71C /* Supporting Files */,
@@ -98,23 +72,6 @@
 			children = (
 				631612681AB8D29A006EA71C /* Info.plist */,
 				631612691AB8D29A006EA71C /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		631612801AB8D2A3006EA71C /* Download ManagerTests */ = {
-			isa = PBXGroup;
-			children = (
-				631612831AB8D2A3006EA71C /* Download_ManagerTests.m */,
-				631612811AB8D2A3006EA71C /* Supporting Files */,
-			);
-			path = "Download ManagerTests";
-			sourceTree = "<group>";
-		};
-		631612811AB8D2A3006EA71C /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				631612821AB8D2A3006EA71C /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -139,24 +96,6 @@
 			productReference = 631612641AB8D299006EA71C /* Download Manager.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6316127C1AB8D2A3006EA71C /* Download ManagerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6316128A1AB8D2A3006EA71C /* Build configuration list for PBXNativeTarget "Download ManagerTests" */;
-			buildPhases = (
-				631612791AB8D2A3006EA71C /* Sources */,
-				6316127A1AB8D2A3006EA71C /* Frameworks */,
-				6316127B1AB8D2A3006EA71C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6316127F1AB8D2A3006EA71C /* PBXTargetDependency */,
-			);
-			name = "Download ManagerTests";
-			productName = "Download ManagerTests";
-			productReference = 6316127D1AB8D2A3006EA71C /* Download ManagerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -168,10 +107,7 @@
 				TargetAttributes = {
 					631612631AB8D297006EA71C = {
 						CreatedOnToolsVersion = 6.1;
-					};
-					6316127C1AB8D2A3006EA71C = {
-						CreatedOnToolsVersion = 6.1;
-						TestTargetID = 631612631AB8D297006EA71C;
+						DevelopmentTeam = HTXY67D8WT;
 					};
 				};
 			};
@@ -189,7 +125,6 @@
 			projectRoot = "";
 			targets = (
 				631612631AB8D297006EA71C /* Download Manager */,
-				6316127C1AB8D2A3006EA71C /* Download ManagerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -199,16 +134,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				631612731AB8D29C006EA71C /* Main.storyboard in Resources */,
 				631612781AB8D29E006EA71C /* LaunchScreen.xib in Resources */,
 				631612751AB8D29E006EA71C /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6316127B1AB8D2A3006EA71C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,39 +146,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				631612701AB8D29B006EA71C /* ViewController.m in Sources */,
+				6316128F1AB8D49B006EA71C /* ACBrowserViewController.m in Sources */,
 				6316126D1AB8D29B006EA71C /* AppDelegate.m in Sources */,
 				6316126A1AB8D29A006EA71C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		631612791AB8D2A3006EA71C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				631612841AB8D2A3006EA71C /* Download_ManagerTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		6316127F1AB8D2A3006EA71C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 631612631AB8D297006EA71C /* Download Manager */;
-			targetProxy = 6316127E1AB8D2A3006EA71C /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
-		631612711AB8D29C006EA71C /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				631612721AB8D29C006EA71C /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		631612761AB8D29E006EA71C /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -343,9 +246,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Download Manager/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -353,43 +259,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Download Manager/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		6316128B1AB8D2A3006EA71C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Download ManagerTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Download Manager.app/Download Manager";
-			};
-			name = Debug;
-		};
-		6316128C1AB8D2A3006EA71C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Download ManagerTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Download Manager.app/Download Manager";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -410,14 +285,6 @@
 			buildConfigurations = (
 				631612881AB8D2A3006EA71C /* Debug */,
 				631612891AB8D2A3006EA71C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-		};
-		6316128A1AB8D2A3006EA71C /* Build configuration list for PBXNativeTarget "Download ManagerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6316128B1AB8D2A3006EA71C /* Debug */,
-				6316128C1AB8D2A3006EA71C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
