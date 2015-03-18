@@ -22,7 +22,12 @@
     self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     self.addressTextField.text = @"https://www.google.com";
     self.addressTextField.center = CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
+    self.addressTextField.keyboardType = UIKeyboardTypeURL;
+    self.addressTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.addressTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.addressTextField.clearButtonMode = UITextFieldViewModeUnlessEditing;
     self.addressTextField.backgroundColor = [UIColor whiteColor];
+    self.addressTextField.returnKeyType = UIReturnKeyGo;
     [self.addressTextField addTarget:self action:@selector(changeAddress:) forControlEvents:UIControlEventEditingDidEndOnExit];
     [self.view addSubview:_addressTextField];
     
@@ -36,6 +41,10 @@
     
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.webView action:@selector(reload)];
     self.navigationItem.rightBarButtonItem = refresh;
+    
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"❰" style:UIBarButtonItemStylePlain target:self.webView action:@selector(goBack)];
+    self.navigationItem.leftBarButtonItem = back;
+    self.navigationItem.leftBarButtonItem.enabled = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -45,10 +54,15 @@
     self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0) + _addressTextField.frame.size.height/2.0);
 }
 
-- (void)changeAddress:(id)sender
+- (void)changeAddress:(UITextField *)sender
 {
+    NSString *absoluteURL = sender.text;
+    if ([absoluteURL rangeOfString:@"http://" options:NSCaseInsensitiveSearch].location == NSNotFound && [absoluteURL rangeOfString:@"https://" options:NSCaseInsensitiveSearch].location == NSNotFound)
+    {
+        absoluteURL = [@"http://" stringByAppendingString:sender.text];
+    }
     [sender resignFirstResponder];
-    NSURL *URL = [NSURL URLWithString:_addressTextField.text];
+    NSURL *URL = [NSURL URLWithString:absoluteURL];
     NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
     [self.webView loadRequest:URLRequest];
 }
@@ -105,6 +119,7 @@
         }
     }
     
+    self.addressTextField.text = request.URL.absoluteString;
     return YES;
 }
 
@@ -115,6 +130,9 @@
     {
         self.navigationItem.title = title;
     }
+    
+    if (self.webView.canGoBack) self.navigationItem.leftBarButtonItem.enabled = YES;
+    else self.navigationItem.leftBarButtonItem.enabled = NO;
 }
 
 @end

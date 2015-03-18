@@ -11,10 +11,28 @@
 #import "ACDownloadTypesController.h"
 #import "ACFileNavigatorKit.framework/Headers/ACRootViewController.h"
 
+#define RGB(x) x/255.0
+#define PRIMARY_COLOR [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"]]
+#define SECONDARY_COLOR_1 [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color2"]]
+#define SECONDARY_COLOR_2 [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color3"]]
+#define TERTIARY_COLOR [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color4"]]
+
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"])
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(52.0) green:RGB(102.0) blue:RGB(153.0) alpha:1.0]] forKey:@"Color1"];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(102.0) green:RGB(102.0) blue:RGB(102.0) alpha:1.0]] forKey:@"Color2"];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor whiteColor]] forKey:@"Color3"];
+    
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(183.0) green:RGB(183.0) blue:RGB(183.0) alpha:1.0]] forKey:@"Color4"];
+    }
+    
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
     NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
@@ -29,13 +47,14 @@
     
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     [tabBarController.tabBar setTranslucent:NO];
+    tabBarController.tabBar.barTintColor = SECONDARY_COLOR_1;
     
     //each controller needs its own nav controller (other way was tested, failed)
     
     ACBrowserViewController *browserController = [[ACBrowserViewController alloc] init];
     UINavigationController *browserNavController = [[UINavigationController alloc] initWithRootViewController:browserController];
     [browserNavController.navigationBar setTranslucent:NO];
-    browserNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Web" image:nil tag:0];
+    browserNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
 
     ACDownloadTypesController *downloadTypes = [[ACDownloadTypesController alloc] initWithStyle:UITableViewStyleGrouped];
     UINavigationController *downloadTypesNavController = [[UINavigationController alloc] initWithRootViewController:downloadTypes];
@@ -52,6 +71,20 @@
     self.window.rootViewController = tabBarController;
     
     [self.window makeKeyAndVisible];
+    
+    [self.window setTintColor:SECONDARY_COLOR_2];
+    [[UIBarButtonItem appearance] setTintColor:SECONDARY_COLOR_2];
+    [[UILabel appearance] setTextColor:SECONDARY_COLOR_1];
+    [[UINavigationBar appearance] setBarTintColor:PRIMARY_COLOR];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UITextField appearance] setTintColor:SECONDARY_COLOR_1];
+    [[UIToolbar appearance] setBarTintColor:TERTIARY_COLOR];
+    [[UIButton appearance] setTintColor:SECONDARY_COLOR_2];
+    [[UIActionSheet appearance] setTintColor:SECONDARY_COLOR_1];
+    [[UITextView appearance] setTintColor:SECONDARY_COLOR_1];
+
+    NSDictionary *navbarTitleTextAttributes = @{NSForegroundColorAttributeName : SECONDARY_COLOR_2};
+    [[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
     
     return YES;
 }

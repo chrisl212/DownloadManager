@@ -310,6 +310,11 @@
 					631612631AB8D297006EA71C = {
 						CreatedOnToolsVersion = 6.1;
 						DevelopmentTeam = HTXY67D8WT;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
