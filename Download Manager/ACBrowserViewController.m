@@ -7,7 +7,7 @@
 //
 
 #import "ACBrowserViewController.h"
-#import "ACFileNavigatorKit.framework/Headers/ACAlertView.h"
+#import <ACFileNavigatorKit/ACAlertView.h>
 #import "ACDownloadManager.h"
 
 @implementation ACBrowserViewController
@@ -77,6 +77,9 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    if ([request.URL.absoluteString rangeOfString:@"youtube.com"].location != NSNotFound)
+        return YES;
+    
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
     NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];

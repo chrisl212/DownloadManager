@@ -8,8 +8,8 @@
 
 #import "AppDelegate.h"
 #import "ACBrowserViewController.h"
-#import "ACDownloadTypesController.h"
-#import "ACFileNavigatorKit.framework/Headers/ACRootViewController.h"
+#import "ACSettingsTableViewController.h"
+#import <ACFileNavigatorKit/ACRootViewController.h>
 
 #define RGB(x) x/255.0
 #define PRIMARY_COLOR [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"]]
@@ -56,17 +56,17 @@
     [browserNavController.navigationBar setTranslucent:NO];
     browserNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
 
-    ACDownloadTypesController *downloadTypes = [[ACDownloadTypesController alloc] initWithStyle:UITableViewStyleGrouped];
-    UINavigationController *downloadTypesNavController = [[UINavigationController alloc] initWithRootViewController:downloadTypes];
-    [downloadTypesNavController.navigationBar setTranslucent:NO];
-    downloadTypesNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:nil tag:1];
+    ACSettingsTableViewController *settingsViewController = [[ACSettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+    [settingsNavController.navigationBar setTranslucent:NO];
+    settingsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:2];
 
     ACRootViewController *downloadsViewController = [[ACRootViewController alloc] init];
     UINavigationController *downloadsNavController = [[UINavigationController alloc] initWithRootViewController:downloadsViewController];
     [downloadsNavController.navigationBar setTranslucent:NO];
     downloadsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemDownloads tag:2];
 
-    tabBarController.viewControllers = @[browserNavController, downloadsNavController, downloadTypesNavController];
+    tabBarController.viewControllers = @[browserNavController, downloadsNavController, settingsNavController];
 
     self.window.rootViewController = tabBarController;
     

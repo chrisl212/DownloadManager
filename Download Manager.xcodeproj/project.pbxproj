@@ -9,14 +9,12 @@
 /* Begin PBXBuildFile section */
 		6316126A1AB8D29A006EA71C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 631612691AB8D29A006EA71C /* main.m */; };
 		6316126D1AB8D29B006EA71C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316126C1AB8D29B006EA71C /* AppDelegate.m */; };
-		631612751AB8D29E006EA71C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 631612741AB8D29E006EA71C /* Images.xcassets */; };
 		631612781AB8D29E006EA71C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 631612761AB8D29E006EA71C /* LaunchScreen.xib */; };
 		6316128F1AB8D49B006EA71C /* ACBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316128E1AB8D49B006EA71C /* ACBrowserViewController.m */; };
 		631612921AB8DDD0006EA71C /* ACDownloadTypesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 631612911AB8DDD0006EA71C /* ACDownloadTypesController.m */; };
 		631612951AB8DDF4006EA71C /* DownloadTypes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 631612931AB8DDF4006EA71C /* DownloadTypes.plist */; };
 		631612961AB8DDF4006EA71C /* MimeTypes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 631612941AB8DDF4006EA71C /* MimeTypes.plist */; };
 		631612A01AB8E1C6006EA71C /* ACDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316129F1AB8E1C6006EA71C /* ACDownloadManager.m */; };
-		6316132B1AB8E53E006EA71C /* ACFileNavigatorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6316132A1AB8E53E006EA71C /* ACFileNavigatorKit.framework */; };
 		6316132D1AB8E5CD006EA71C /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6316132C1AB8E5CD006EA71C /* CoreImage.framework */; };
 		6316132F1AB8E5D1006EA71C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6316132E1AB8E5D1006EA71C /* QuartzCore.framework */; };
 		631613311AB8E5D5006EA71C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 631613301AB8E5D5006EA71C /* libz.dylib */; };
@@ -68,6 +66,12 @@
 		631613901AB8E72A006EA71C /* zip.ico in Resources */ = {isa = PBXBuildFile; fileRef = 631613621AB8E72A006EA71C /* zip.ico */; };
 		631613911AB8E72A006EA71C /* ZipIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 631613631AB8E72A006EA71C /* ZipIcon.png */; };
 		631613921AB8E72A006EA71C /* ZipIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 631613641AB8E72A006EA71C /* ZipIcon@2x.png */; };
+		631613961AB8FC76006EA71C /* ACSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 631613951AB8FC76006EA71C /* ACSettingsTableViewController.m */; };
+		6316139A1AB9032F006EA71C /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 631613981AB9032F006EA71C /* Icon-60@2x.png */; };
+		6316139C1AB9035C006EA71C /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6316139B1AB9035C006EA71C /* Media.xcassets */; };
+		631613A01AB906CE006EA71C /* ACColorSchemeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316139E1AB906CE006EA71C /* ACColorSchemeController.m */; };
+		631613A11AB906CE006EA71C /* ACColorSchemeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */; };
+		63CC6D3B1AB90A71003C8498 /* ACFileNavigatorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CC6D3A1AB90A71003C8498 /* ACFileNavigatorKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,7 +80,6 @@
 		631612691AB8D29A006EA71C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6316126B1AB8D29A006EA71C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6316126C1AB8D29B006EA71C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		631612741AB8D29E006EA71C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		631612771AB8D29E006EA71C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		6316128D1AB8D49B006EA71C /* ACBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACBrowserViewController.h; sourceTree = "<group>"; };
 		6316128E1AB8D49B006EA71C /* ACBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACBrowserViewController.m; sourceTree = "<group>"; };
@@ -86,7 +89,6 @@
 		631612941AB8DDF4006EA71C /* MimeTypes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MimeTypes.plist; sourceTree = "<group>"; };
 		6316129E1AB8E1C6006EA71C /* ACDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACDownloadManager.h; sourceTree = "<group>"; };
 		6316129F1AB8E1C6006EA71C /* ACDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACDownloadManager.m; sourceTree = "<group>"; };
-		6316132A1AB8E53E006EA71C /* ACFileNavigatorKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ACFileNavigatorKit.framework; path = "Download Manager/ACFileNavigatorKit.framework"; sourceTree = "<group>"; };
 		6316132C1AB8E5CD006EA71C /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		6316132E1AB8E5D1006EA71C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		631613301AB8E5D5006EA71C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -138,6 +140,14 @@
 		631613621AB8E72A006EA71C /* zip.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = zip.ico; sourceTree = "<group>"; };
 		631613631AB8E72A006EA71C /* ZipIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZipIcon.png; sourceTree = "<group>"; };
 		631613641AB8E72A006EA71C /* ZipIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ZipIcon@2x.png"; sourceTree = "<group>"; };
+		631613941AB8FC76006EA71C /* ACSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACSettingsTableViewController.h; sourceTree = "<group>"; };
+		631613951AB8FC76006EA71C /* ACSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACSettingsTableViewController.m; sourceTree = "<group>"; };
+		631613981AB9032F006EA71C /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
+		6316139B1AB9035C006EA71C /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		6316139D1AB906CE006EA71C /* ACColorSchemeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACColorSchemeController.h; sourceTree = "<group>"; };
+		6316139E1AB906CE006EA71C /* ACColorSchemeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACColorSchemeController.m; sourceTree = "<group>"; };
+		6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ACColorSchemeController.xib; sourceTree = "<group>"; };
+		63CC6D3A1AB90A71003C8498 /* ACFileNavigatorKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ACFileNavigatorKit.framework; path = "../../Library/Developer/Xcode/DerivedData/ACFileNavigator-glnxizwrfktswjbdxostmeiakfgp/Build/Products/Debug-iphoneos/ACFileNavigatorKit.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,7 +160,7 @@
 				631613311AB8E5D5006EA71C /* libz.dylib in Frameworks */,
 				6316132F1AB8E5D1006EA71C /* QuartzCore.framework in Frameworks */,
 				6316132D1AB8E5CD006EA71C /* CoreImage.framework in Frameworks */,
-				6316132B1AB8E53E006EA71C /* ACFileNavigatorKit.framework in Frameworks */,
+				63CC6D3B1AB90A71003C8498 /* ACFileNavigatorKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +170,7 @@
 		6316125B1AB8D295006EA71C = {
 			isa = PBXGroup;
 			children = (
+				6316139B1AB9035C006EA71C /* Media.xcassets */,
 				631613361AB8E5EE006EA71C /* Frameworks */,
 				631612661AB8D299006EA71C /* Download Manager */,
 				631612651AB8D299006EA71C /* Products */,
@@ -181,12 +192,17 @@
 				6316126C1AB8D29B006EA71C /* AppDelegate.m */,
 				6316128D1AB8D49B006EA71C /* ACBrowserViewController.h */,
 				6316128E1AB8D49B006EA71C /* ACBrowserViewController.m */,
+				631613941AB8FC76006EA71C /* ACSettingsTableViewController.h */,
+				631613951AB8FC76006EA71C /* ACSettingsTableViewController.m */,
 				631612901AB8DDD0006EA71C /* ACDownloadTypesController.h */,
 				631612911AB8DDD0006EA71C /* ACDownloadTypesController.m */,
+				6316139D1AB906CE006EA71C /* ACColorSchemeController.h */,
+				6316139E1AB906CE006EA71C /* ACColorSchemeController.m */,
+				6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */,
 				6316129E1AB8E1C6006EA71C /* ACDownloadManager.h */,
 				6316129F1AB8E1C6006EA71C /* ACDownloadManager.m */,
 				6316129D1AB8DE86006EA71C /* File Types */,
-				631612741AB8D29E006EA71C /* Images.xcassets */,
+				631613981AB9032F006EA71C /* Icon-60@2x.png */,
 				631612761AB8D29E006EA71C /* LaunchScreen.xib */,
 				631612671AB8D299006EA71C /* Supporting Files */,
 			);
@@ -214,8 +230,8 @@
 		631613361AB8E5EE006EA71C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63CC6D3A1AB90A71003C8498 /* ACFileNavigatorKit.framework */,
 				631613931AB8E736006EA71C /* FNKIT RESOURCES */,
-				6316132A1AB8E53E006EA71C /* ACFileNavigatorKit.framework */,
 				631613341AB8E5E7006EA71C /* MediaPlayer.framework */,
 				631613321AB8E5DA006EA71C /* AVFoundation.framework */,
 				631613301AB8E5D5006EA71C /* libz.dylib */,
@@ -343,6 +359,7 @@
 			files = (
 				631613701AB8E72A006EA71C /* DeleteIcon-bar@2x.png in Resources */,
 				6316138E1AB8E72A006EA71C /* WebIcon.png in Resources */,
+				6316139C1AB9035C006EA71C /* Media.xcassets in Resources */,
 				631613871AB8E72A006EA71C /* sound.ico in Resources */,
 				631613901AB8E72A006EA71C /* zip.ico in Resources */,
 				6316136F1AB8E72A006EA71C /* DeleteIcon-bar.png in Resources */,
@@ -356,6 +373,7 @@
 				631613681AB8E72A006EA71C /* ACImageViewer.nib in Resources */,
 				6316137E1AB8E72A006EA71C /* Info.plist in Resources */,
 				6316138B1AB8E72A006EA71C /* unsupported.ico in Resources */,
+				6316139A1AB9032F006EA71C /* Icon-60@2x.png in Resources */,
 				631613851AB8E72A006EA71C /* rtf.ico in Resources */,
 				631613801AB8E72A006EA71C /* MovieIcon.png in Resources */,
 				631613721AB8E72A006EA71C /* DeleteIcon@2x.png in Resources */,
@@ -363,7 +381,6 @@
 				631613861AB8E72A006EA71C /* settings@2x.png in Resources */,
 				6316136E1AB8E72A006EA71C /* back@2x.png in Resources */,
 				6316136B1AB8E72A006EA71C /* ACWebViewController.nib in Resources */,
-				631612751AB8D29E006EA71C /* Images.xcassets in Resources */,
 				631613911AB8E72A006EA71C /* ZipIcon.png in Resources */,
 				631613691AB8E72A006EA71C /* ACPropertyViewController.nib in Resources */,
 				631613651AB8E72A006EA71C /* ACAudioPlayerController.nib in Resources */,
@@ -372,6 +389,7 @@
 				6316136C1AB8E72A006EA71C /* AudioIcon.png in Resources */,
 				6316138A1AB8E72A006EA71C /* txt.ico in Resources */,
 				631613751AB8E72A006EA71C /* FileTypes.plist in Resources */,
+				631613A11AB906CE006EA71C /* ACColorSchemeController.xib in Resources */,
 				6316138F1AB8E72A006EA71C /* WebIcon@2x.png in Resources */,
 				631613661AB8E72A006EA71C /* ACFileCell.nib in Resources */,
 				631613711AB8E72A006EA71C /* DeleteIcon.png in Resources */,
@@ -404,6 +422,8 @@
 				6316128F1AB8D49B006EA71C /* ACBrowserViewController.m in Sources */,
 				6316126D1AB8D29B006EA71C /* AppDelegate.m in Sources */,
 				631612A01AB8E1C6006EA71C /* ACDownloadManager.m in Sources */,
+				631613961AB8FC76006EA71C /* ACSettingsTableViewController.m in Sources */,
+				631613A01AB906CE006EA71C /* ACColorSchemeController.m in Sources */,
 				6316126A1AB8D29A006EA71C /* main.m in Sources */,
 				631612921AB8DDD0006EA71C /* ACDownloadTypesController.m in Sources */,
 			);
@@ -507,8 +527,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Download",
-					Manager,
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/ACFileNavigator-glnxizwrfktswjbdxostmeiakfgp/Build/Products/Debug-iphoneos",
 				);
 				INFOPLIST_FILE = "Download Manager/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -525,8 +544,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Download",
-					Manager,
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/ACFileNavigator-glnxizwrfktswjbdxostmeiakfgp/Build/Products/Debug-iphoneos",
 				);
 				INFOPLIST_FILE = "Download Manager/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -554,6 +572,7 @@
 				631612891AB8D2A3006EA71C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

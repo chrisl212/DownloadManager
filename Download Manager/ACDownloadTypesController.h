@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ACFileNavigatorKit.framework/Headers/ACAlertView.h"
-#import "ACFileNavigatorKit.framework/Headers/ACFile.h"
+#import <ACFileNavigatorKit/ACAlertView.h>
+#import <ACFileNavigatorKit/ACFile.h>
 
 @interface ACDownloadTypesController : UITableViewController <ACAlertViewDelegate>
 

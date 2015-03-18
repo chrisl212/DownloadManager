@@ -10,6 +10,15 @@
 
 @implementation ACDownloadTypesController
 
+- (instancetype)init
+{
+    if (self = [super initWithStyle:UITableViewStyleGrouped])
+    {
+        
+    }
+    return self;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -114,6 +123,10 @@
     {
         UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addType)];
         self.navigationItem.leftBarButtonItem = add;
+    }
+    else
+    {
+        self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
     }
 }
 
