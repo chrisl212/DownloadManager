@@ -52,14 +52,14 @@
     [self.data appendData:data];
     self.downloadedSize += data.length;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.alertView.progressView setProgress:self.downloadedSize/self.totalSize animated:YES];
+        [self.alertView.progressView setProgress:self.downloadedSize/self.totalSize];
     });
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *fileName = connection.originalRequest.URL.absoluteString.lastPathComponent;
+    NSString *fileName = [[connection.originalRequest.URL.absoluteString componentsSeparatedByString:@"?"][0] lastPathComponent];
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:fileName];
     [[NSFileManager defaultManager] createFileAtPath:filePath contents:self.data attributes:nil];
     [self.alertView dismiss];

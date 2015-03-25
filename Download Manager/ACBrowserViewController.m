@@ -19,7 +19,7 @@
     self.extendedLayoutIncludesOpaqueBars=NO;
     self.automaticallyAdjustsScrollViewInsets=NO;
     
-    self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
     self.addressTextField.text = @"https://www.google.com";
     self.addressTextField.center = CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
     self.addressTextField.keyboardType = UIKeyboardTypeURL;
@@ -50,7 +50,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.webView.frame = CGRectMake(0.0, 0.0, 320.0, self.view.frame.size.height - _addressTextField.frame.size.height);
+    self.webView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height - _addressTextField.frame.size.height);
     self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0) + _addressTextField.frame.size.height/2.0);
 }
 
@@ -86,26 +86,29 @@
     
     NSArray *typesArray = [NSArray arrayWithContentsOfFile:dlTypesPath];
     
-    NSURLRequest *fileUrlRequest = [[NSURLRequest alloc] initWithURL:request.URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:0.3];
-    
-    NSError *error = nil;
-    NSURLResponse *response = nil;
-    [NSURLConnection sendSynchronousRequest:fileUrlRequest returningResponse:&response error:&error];
-    NSString *MIMEType = [response MIMEType];
-    
-    NSString *requestFileType = request.URL.absoluteString.pathExtension;
+    NSString *requestFileType = [[request.URL.absoluteString componentsSeparatedByString:@"?"][0] pathExtension];
     for (NSString *type in typesArray)
     {
         if ([type caseInsensitiveCompare:requestFileType] == NSOrderedSame)
         {
             ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
-            NSString *title = request.URL.absoluteString.lastPathComponent;
+            NSString *title = [[request.URL.absoluteString componentsSeparatedByString:@"?"][0] lastPathComponent];
             ACAlertView *alertView = [ACAlertView alertWithTitle:title style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[@"Cancel", @"Hide"]];
+            alertView.progressView.backgroundColor = [UIColor clearColor];
             [alertView show];
             [downloadManager downloadFileAtURL:request.URL];
             return NO;
         }
     }
+    
+    //NSURLRequest *fileUrlRequest = [[NSURLRequest alloc] initWithURL:request.URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:0.3];
+    
+    //NSError *error = nil;
+    NSURLResponse *response = nil;
+    //[NSURLConnection sendSynchronousRequest:fileUrlRequest returningResponse:&response error:&error];
+    NSString *MIMEType = [response MIMEType];
+    
+    
     typesArray = [NSArray arrayWithContentsOfFile:mimeTypesPath];
     for (NSString *mime in typesArray)
     {

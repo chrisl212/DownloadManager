@@ -46,7 +46,6 @@
     self.window = [[UIWindow alloc] initWithFrame:applicationFrame];
     
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    [tabBarController.tabBar setTranslucent:NO];
     tabBarController.tabBar.barTintColor = SECONDARY_COLOR_1;
     
     //each controller needs its own nav controller (other way was tested, failed)
@@ -72,9 +71,9 @@
     
     [self.window makeKeyAndVisible];
     
+    [[UILabel appearance] setTextColor:SECONDARY_COLOR_1];
     [self.window setTintColor:SECONDARY_COLOR_2];
     [[UIBarButtonItem appearance] setTintColor:SECONDARY_COLOR_2];
-    [[UILabel appearance] setTextColor:SECONDARY_COLOR_1];
     [[UINavigationBar appearance] setBarTintColor:PRIMARY_COLOR];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UITextField appearance] setTintColor:SECONDARY_COLOR_1];
@@ -82,10 +81,11 @@
     [[UIButton appearance] setTintColor:SECONDARY_COLOR_2];
     [[UIActionSheet appearance] setTintColor:SECONDARY_COLOR_1];
     [[UITextView appearance] setTintColor:SECONDARY_COLOR_1];
-
+    
     NSDictionary *navbarTitleTextAttributes = @{NSForegroundColorAttributeName : SECONDARY_COLOR_2};
     [[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
     
+    [self.window setBackgroundColor:SECONDARY_COLOR_2];
     return YES;
 }
 
