@@ -10,6 +10,7 @@
 #import "ACBrowserViewController.h"
 #import "ACSettingsTableViewController.h"
 #import <ACFileNavigatorKit/ACRootViewController.h>
+#import "ACiCloudViewController.h"
 
 #define RGB(x) x/255.0
 #define PRIMARY_COLOR [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"]]
@@ -19,6 +20,12 @@
 
 
 @implementation AppDelegate
+
+- (NSString *)iCloudPath
+{
+    NSURL *uu = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
+    return [[uu path] stringByAppendingPathComponent:@"Documents"];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -31,6 +38,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor whiteColor]] forKey:@"Color3"];
     
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(183.0) green:RGB(183.0) blue:RGB(183.0) alpha:1.0]] forKey:@"Color4"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"iCloud"];
     }
     
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -41,6 +49,20 @@
         [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DownloadTypes" ofType:@"plist"] toPath:dlTypesPath error:nil];
         [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"MimeTypes" ofType:@"plist"] toPath:mimeTypesPath error:nil];
     }
+    
+    //directory for iCloud files
+    //NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    //NSString *iCloudDirectoryPath = [documentsDirectory stringByAppendingPathComponent:@".iCloud"];
+    //if (![[NSFileManager defaultManager] fileExistsAtPath:iCloudDirectoryPath])
+        //[[NSFileManager defaultManager] createDirectoryAtPath:iCloudDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
+    /*
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSError *error;
+        [[NSFileManager defaultManager] copyItemAtURL:[NSURL fileURLWithPath:[self iCloudPath]] toURL:[NSURL fileURLWithPath:iCloudDirectoryPath] error:&error];
+        if (error)
+            NSLog(@"%@", error);
+    } ); */
+    
     
     CGRect applicationFrame = [[UIScreen mainScreen] bounds];
     self.window = [[UIWindow alloc] initWithFrame:applicationFrame];
@@ -64,8 +86,13 @@
     UINavigationController *downloadsNavController = [[UINavigationController alloc] initWithRootViewController:downloadsViewController];
     [downloadsNavController.navigationBar setTranslucent:NO];
     downloadsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemDownloads tag:2];
+    
+    ACiCloudViewController *iCloudViewController = [[ACiCloudViewController alloc] initWithDirectoryPath:[self iCloudPath]];
+    UINavigationController *iCloudNavController = [[UINavigationController alloc] initWithRootViewController:iCloudViewController];
+    [iCloudNavController.navigationBar setTranslucent:NO];
+    iCloudNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"iCloud" image:[UIImage imageNamed:@"Cloud-Tab.png"] tag:3];
 
-    tabBarController.viewControllers = @[browserNavController, downloadsNavController, settingsNavController];
+    tabBarController.viewControllers = @[browserNavController, downloadsNavController, iCloudNavController, settingsNavController];
 
     self.window.rootViewController = tabBarController;
     

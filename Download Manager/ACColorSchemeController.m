@@ -15,7 +15,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    for (UIButton *button in self.view.subviews)
+        if ([button isKindOfClass:[UIButton class]])
+            button.tintColor = [UIColor blueColor];
 }
 
 - (void)didReceiveMemoryWarning

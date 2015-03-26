@@ -11,6 +11,14 @@
 #import "ACDownloadManager.h"
 
 @implementation ACBrowserViewController
+{
+    NSMutableData *downloadedData;
+    long long expectedLength;
+    UIBarButtonItem *refreshBarButton;
+    UIBarButtonItem *progressViewBarButton;
+    NSString *MIMEType;
+    UIToolbar *toolbar;
+}
 
 - (void)viewDidLoad
 {
@@ -19,17 +27,28 @@
     self.extendedLayoutIncludesOpaqueBars=NO;
     self.automaticallyAdjustsScrollViewInsets=NO;
     
-    self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
-    self.addressTextField.text = @"https://www.google.com";
-    self.addressTextField.center = CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
+    toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+    toolbar.center = CGPointMake(self.view.frame.size.width/2.0, toolbar.frame.size.height/2.0);
+    //toolbar.barTintColor = [UIColor redColor];
+    [self.view addSubview:toolbar];
+    
+    self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 10, 32)];
+    self.addressTextField.text = @"https://www.google.com/";
+    //self.addressTextField.center = toolbar.center;//CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
     self.addressTextField.keyboardType = UIKeyboardTypeURL;
+    self.addressTextField.borderStyle = UITextBorderStyleRoundedRect;
     self.addressTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.addressTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.addressTextField.clearButtonMode = UITextFieldViewModeUnlessEditing;
     self.addressTextField.backgroundColor = [UIColor whiteColor];
     self.addressTextField.returnKeyType = UIReturnKeyGo;
     [self.addressTextField addTarget:self action:@selector(changeAddress:) forControlEvents:UIControlEventEditingDidEndOnExit];
-    [self.view addSubview:_addressTextField];
+    
+    UIBarButtonItem *textFieldBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.addressTextField];
+    UIBarButtonItem *flex1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *flex2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+
+    toolbar.items = @[flex1, textFieldBarButton, flex2];
     
     self.webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     self.webView.delegate = self;
@@ -39,8 +58,11 @@
     NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
     [self.webView loadRequest:URLRequest];
     
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.webView action:@selector(reload)];
-    self.navigationItem.rightBarButtonItem = refresh;
+    refreshBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.webView action:@selector(reload)];
+    self.navigationItem.rightBarButtonItem = refreshBarButton;
+    
+    self.progressView = [[ACCircularProgressView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    progressViewBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.progressView];
     
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"❰" style:UIBarButtonItemStylePlain target:self.webView action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = back;
@@ -50,8 +72,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.webView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height - _addressTextField.frame.size.height);
-    self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0) + _addressTextField.frame.size.height/2.0);
+    self.webView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height - toolbar.frame.size.height);
+    self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0) + toolbar.frame.size.height/2.0);
 }
 
 - (void)changeAddress:(UITextField *)sender
@@ -73,16 +95,67 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Connection delegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
+{
+    if (response.statusCode == 200)
+    {
+        self.navigationItem.rightBarButtonItem = progressViewBarButton;
+        
+        expectedLength = response.expectedContentLength;
+        downloadedData = [NSMutableData data];
+        
+        MIMEType = [response MIMEType];
+        
+        NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
+        NSArray *typesArray = [NSArray arrayWithContentsOfFile:mimeTypesPath];
+        for (NSString *mime in typesArray)
+        {
+            if (!MIMEType)
+                break;
+            if ([MIMEType caseInsensitiveCompare:mime] == NSOrderedSame)
+            {
+                ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
+                NSString *title = connection.originalRequest.URL.absoluteString.lastPathComponent;
+                ACAlertView *alertView = [ACAlertView alertWithTitle:title style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[@"Cancel", @"Hide"]];
+                [alertView show];
+                [downloadManager downloadFileAtURL:connection.originalRequest.URL];
+                [connection cancel];
+            }
+        }
+
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [downloadedData appendData:data];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressView.progress = data.length/expectedLength;
+    });
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    self.navigationItem.rightBarButtonItem = refreshBarButton;
+    
+    [self.webView loadData:downloadedData MIMEType:MIMEType textEncodingName:@"utf-8" baseURL:connection.originalRequest.URL];
+}
+
 #pragma mark - Web View Delegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    if ([request.URL.absoluteString rangeOfString:@"youtube.com"].location != NSNotFound)
+    self.addressTextField.text = request.URL.absoluteString;
+    self.navigationItem.leftBarButtonItem.enabled = self.webView.canGoBack;
+    
+    if (navigationType == UIWebViewNavigationTypeOther)
         return YES;
     
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
-    NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
     
     NSArray *typesArray = [NSArray arrayWithContentsOfFile:dlTypesPath];
     
@@ -101,32 +174,11 @@
         }
     }
     
-    //NSURLRequest *fileUrlRequest = [[NSURLRequest alloc] initWithURL:request.URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:0.3];
     
-    //NSError *error = nil;
-    NSURLResponse *response = nil;
-    //[NSURLConnection sendSynchronousRequest:fileUrlRequest returningResponse:&response error:&error];
-    NSString *MIMEType = [response MIMEType];
+    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    [connection start];
     
-    
-    typesArray = [NSArray arrayWithContentsOfFile:mimeTypesPath];
-    for (NSString *mime in typesArray)
-    {
-        if (!MIMEType)
-            break;
-        if ([MIMEType caseInsensitiveCompare:mime] == NSOrderedSame)
-        {
-            ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
-            NSString *title = request.URL.absoluteString.lastPathComponent;
-            ACAlertView *alertView = [ACAlertView alertWithTitle:title style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[@"Cancel", @"Hide"]];
-            [alertView show];
-            [downloadManager downloadFileAtURL:request.URL];
-            return NO;
-        }
-    }
-    
-    self.addressTextField.text = request.URL.absoluteString;
-    return YES;
+    return NO;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView

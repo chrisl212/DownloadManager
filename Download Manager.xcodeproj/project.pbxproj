@@ -72,6 +72,9 @@
 		631613A01AB906CE006EA71C /* ACColorSchemeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316139E1AB906CE006EA71C /* ACColorSchemeController.m */; };
 		631613A11AB906CE006EA71C /* ACColorSchemeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */; };
 		63CC6D3B1AB90A71003C8498 /* ACFileNavigatorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CC6D3A1AB90A71003C8498 /* ACFileNavigatorKit.framework */; };
+		63F4FFD81AC35FE20058874B /* ACiCloudViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63F4FFD71AC35FE20058874B /* ACiCloudViewController.m */; };
+		63F4FFDA1AC36D010058874B /* Cloud-Tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63F4FFD91AC36D010058874B /* Cloud-Tab@2x.png */; };
+		63F4FFDC1AC379470058874B /* Cloud-Tab@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63F4FFDB1AC379470058874B /* Cloud-Tab@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -148,6 +151,11 @@
 		6316139E1AB906CE006EA71C /* ACColorSchemeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACColorSchemeController.m; sourceTree = "<group>"; };
 		6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ACColorSchemeController.xib; sourceTree = "<group>"; };
 		63CC6D3A1AB90A71003C8498 /* ACFileNavigatorKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ACFileNavigatorKit.framework; path = "../../Library/Developer/Xcode/DerivedData/ACFileNavigator-glnxizwrfktswjbdxostmeiakfgp/Build/Products/Debug-iphoneos/ACFileNavigatorKit.framework"; sourceTree = "<group>"; };
+		63F4FFD11AC35C340058874B /* Download Manager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Download Manager.entitlements"; sourceTree = "<group>"; };
+		63F4FFD61AC35FE20058874B /* ACiCloudViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACiCloudViewController.h; sourceTree = "<group>"; };
+		63F4FFD71AC35FE20058874B /* ACiCloudViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACiCloudViewController.m; sourceTree = "<group>"; };
+		63F4FFD91AC36D010058874B /* Cloud-Tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Cloud-Tab@2x.png"; sourceTree = "<group>"; };
+		63F4FFDB1AC379470058874B /* Cloud-Tab@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Cloud-Tab@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +196,7 @@
 		631612661AB8D299006EA71C /* Download Manager */ = {
 			isa = PBXGroup;
 			children = (
+				63F4FFD21AC35EDE0058874B /* iCloud */,
 				6316126B1AB8D29A006EA71C /* AppDelegate.h */,
 				6316126C1AB8D29B006EA71C /* AppDelegate.m */,
 				6316128D1AB8D49B006EA71C /* ACBrowserViewController.h */,
@@ -294,6 +303,18 @@
 			name = "FNKIT RESOURCES";
 			sourceTree = "<group>";
 		};
+		63F4FFD21AC35EDE0058874B /* iCloud */ = {
+			isa = PBXGroup;
+			children = (
+				63F4FFD11AC35C340058874B /* Download Manager.entitlements */,
+				63F4FFD61AC35FE20058874B /* ACiCloudViewController.h */,
+				63F4FFD71AC35FE20058874B /* ACiCloudViewController.m */,
+				63F4FFD91AC36D010058874B /* Cloud-Tab@2x.png */,
+				63F4FFDB1AC379470058874B /* Cloud-Tab@3x.png */,
+			);
+			name = iCloud;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -328,6 +349,9 @@
 						DevelopmentTeam = HTXY67D8WT;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
 								enabled = 1;
 							};
 						};
@@ -378,7 +402,9 @@
 				631613801AB8E72A006EA71C /* MovieIcon.png in Resources */,
 				631613721AB8E72A006EA71C /* DeleteIcon@2x.png in Resources */,
 				6316136D1AB8E72A006EA71C /* AudioIcon@2x.png in Resources */,
+				63F4FFDC1AC379470058874B /* Cloud-Tab@3x.png in Resources */,
 				631613861AB8E72A006EA71C /* settings@2x.png in Resources */,
+				63F4FFDA1AC36D010058874B /* Cloud-Tab@2x.png in Resources */,
 				6316136E1AB8E72A006EA71C /* back@2x.png in Resources */,
 				6316136B1AB8E72A006EA71C /* ACWebViewController.nib in Resources */,
 				631613911AB8E72A006EA71C /* ZipIcon.png in Resources */,
@@ -419,6 +445,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63F4FFD81AC35FE20058874B /* ACiCloudViewController.m in Sources */,
 				6316128F1AB8D49B006EA71C /* ACBrowserViewController.m in Sources */,
 				6316126D1AB8D29B006EA71C /* AppDelegate.m in Sources */,
 				631612A01AB8E1C6006EA71C /* ACDownloadManager.m in Sources */,
@@ -523,6 +550,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Download Manager/Download Manager.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -540,6 +568,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Download Manager/Download Manager.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
