@@ -39,6 +39,7 @@
     
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(183.0) green:RGB(183.0) blue:RGB(183.0) alpha:1.0]] forKey:@"Color4"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"iCloud"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"https://google.com" forKey:@"homepage"];
     }
     
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];

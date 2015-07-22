@@ -18,6 +18,7 @@
     UIBarButtonItem *progressViewBarButton;
     NSString *MIMEType;
     UIToolbar *toolbar;
+    NSURL *requestURL;
 }
 
 - (void)viewDidLoad
@@ -33,7 +34,7 @@
     [self.view addSubview:toolbar];
     
     self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 10, 32)];
-    self.addressTextField.text = @"https://www.google.com/";
+    self.addressTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"];
     //self.addressTextField.center = toolbar.center;//CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
     self.addressTextField.keyboardType = UIKeyboardTypeURL;
     self.addressTextField.borderStyle = UITextBorderStyleRoundedRect;
@@ -117,11 +118,11 @@
                 break;
             if ([MIMEType caseInsensitiveCompare:mime] == NSOrderedSame)
             {
-                ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
-                NSString *title = connection.originalRequest.URL.absoluteString.lastPathComponent;
-                ACAlertView *alertView = [ACAlertView alertWithTitle:title style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[@"Cancel", @"Hide"]];
+                ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+                alertView.textField.text = connection.originalRequest.URL.lastPathComponent;
                 [alertView show];
-                [downloadManager downloadFileAtURL:connection.originalRequest.URL];
+                
+                requestURL = connection.originalRequest.URL;
                 [connection cancel];
             }
         }
@@ -151,9 +152,7 @@
     self.addressTextField.text = request.URL.absoluteString;
     self.navigationItem.leftBarButtonItem.enabled = self.webView.canGoBack;
     
-    if (navigationType == UIWebViewNavigationTypeOther)
-        return YES;
-    
+
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
     
@@ -164,16 +163,18 @@
     {
         if ([type caseInsensitiveCompare:requestFileType] == NSOrderedSame)
         {
-            ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
-            NSString *title = [[request.URL.absoluteString componentsSeparatedByString:@"?"][0] lastPathComponent];
-            ACAlertView *alertView = [ACAlertView alertWithTitle:title style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[@"Cancel", @"Hide"]];
-            alertView.progressView.backgroundColor = [UIColor clearColor];
+            ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+            alertView.textField.text = request.URL.lastPathComponent;
             [alertView show];
-            [downloadManager downloadFileAtURL:request.URL];
+
+            requestURL = request.URL;
+            
             return NO;
         }
     }
     
+    if (navigationType == UIWebViewNavigationTypeOther)
+        return YES;
     
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
     [connection start];
@@ -191,6 +192,23 @@
     
     if (self.webView.canGoBack) self.navigationItem.leftBarButtonItem.enabled = YES;
     else self.navigationItem.leftBarButtonItem.enabled = NO;
+}
+
+#pragma mark - Alert View Delegate
+
+- (void)alertView:(ACAlertView *)alertView didClickButtonWithTitle:(NSString *)title
+{
+    if ([title isEqualToString:@"Download"])
+    {
+        ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
+        downloadManager.fileName = alertView.textField.text;
+        
+        NSString *title = alertView.textField.text;
+        ACAlertView *alertView = [ACAlertView alertWithTitle:title style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[@"Cancel", @"Hide"]];
+        [alertView show];
+        [downloadManager downloadFileAtURL:requestURL];
+    }
+    [alertView dismiss];
 }
 
 @end

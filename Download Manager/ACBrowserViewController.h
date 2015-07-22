@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <ACFileNavigatorKit/ACCircularProgressView.h>
+#import <ACFileNavigatorKit/ACFileNavigatorKit.h>
 
-@interface ACBrowserViewController : UIViewController <UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate>
+@interface ACBrowserViewController : UIViewController <UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ACAlertViewDelegate>
 
 @property (strong, nonatomic) UIWebView *webView;
 @property (strong, nonatomic) UITextField *addressTextField;

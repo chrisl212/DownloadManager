@@ -16,7 +16,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    settings = @{@"Files" : @[@{@"Downloadable Types" : @"ACDownloadTypesController"}, @{@"Add to iCloud" : @"BOOL"}], @"Appearance" : @[@{@"Color Scheme" : @"ACColorSchemeController"}], @"Support" : @[@{@"Support" : @"WEB VIEW"}]};
+    settings = @{@"Files" : @[@{@"Downloadable Types" : @"ACDownloadTypesController"}, @{@"Add to iCloud" : @"BOOL"}], @"Appearance" : @[@{@"Color Scheme" : @"ACColorSchemeController"}, @{@"Font" : @"ALERT"}, @{@"Homepage" : @"TEXT FIELD"}], @"Support" : @[@{@"Support" : @"WEB VIEW"}]};
     self.navigationItem.title = @"Settings";
 }
 
@@ -60,13 +60,52 @@
         boolSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"iCloud"];
         [boolSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventTouchUpInside];
     }
+    else if ([cell.textLabel.text isEqualToString:@"Homepage"])
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
+        cell.textLabel.text = [settings.allValues[indexPath.section][indexPath.row] allKeys][0];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        cell.detailTextLabel.hidden = YES;
+        [[cell viewWithTag:3] removeFromSuperview];
+        UITextField *textField = [[UITextField alloc] init];
+        
+        textField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"];
+        textField.keyboardType = UIKeyboardTypeURL;
+        textField.autocorrectionType = UITextAutocorrectionTypeNo;
+        textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        
+        textField.tag = 3;
+        textField.translatesAutoresizingMaskIntoConstraints = NO;
+        [cell.contentView addSubview:textField];
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell.textLabel attribute:NSLayoutAttributeTrailing multiplier:1 constant:8]];
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:8]];
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-8]];
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:-16]];
+        textField.textAlignment = NSTextAlignmentRight;
+        textField.delegate = self;
+        
+        [textField addTarget:textField action:@selector(resignFirstResponder) forControlEvents:UIControlEventEditingDidEndOnExit];
+    }
+    else if ([cell.textLabel.text isEqualToString:@"Font"])
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
+        cell.textLabel.text = @"Font";
+        cell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"font"];
+    }
     else
     {
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         cell.accessoryView = nil;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     return cell;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    [[NSUserDefaults standardUserDefaults] setObject:textField.text forKey:@"homepage"];
 }
 
 - (void)switchChanged:(UISwitch *)sender
@@ -91,10 +130,52 @@
         [self.navigationController pushViewController:vc animated:YES];
         return;
     }
+    else if ([controllerName isEqualToString:@"TEXT FIELD"])
+        return;
+    else if ([controllerName isEqualToString:@"ALERT"])
+    {
+        ACAlertView *alertView = [ACAlertView alertWithTitle:@"Font" style:ACAlertViewStylePickerView delegate:self buttonTitles:@[@"Cancel", @"Reset", @"OK"]];
+        alertView.pickerViewItems = [self fonts];
+        
+        [alertView show];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
     
     Class c = NSClassFromString(controllerName);
     id vc = [[c alloc] init];
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)alertView:(ACAlertView *)alertView didClickButtonWithTitle:(NSString *)title
+{
+    if ([title isEqualToString:@"Reset"])
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:@"Arial" forKey:@"font"];
+    }
+    else if ([title isEqualToString:@"OK"])
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:alertView.pickerViewButton.titleLabel.text forKey:@"font"];
+    }
+    
+    [alertView dismiss];
+}
+
+- (NSArray *)fonts
+{
+    NSMutableArray *fonts = [NSMutableArray array];
+    
+    NSArray *familyNames = [[NSArray alloc] initWithArray:[UIFont familyNames]];
+    NSArray *fontNames;
+    NSInteger indFamily;
+    for (indFamily=0; indFamily<[familyNames count]; ++indFamily)
+    {
+        fontNames = [[NSArray alloc] initWithArray:
+                     [UIFont fontNamesForFamilyName:
+                      [familyNames objectAtIndex:indFamily]]];
+        [fonts addObjectsFromArray:fontNames];
+    }
+    return [NSArray arrayWithArray:fonts];
 }
 
 @end

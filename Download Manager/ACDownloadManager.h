@@ -16,6 +16,7 @@
 @property (nonatomic) long double downloadedSize;
 @property (nonatomic) long double totalSize;
 @property (strong, nonatomic) NSURLConnection *connection;
+@property (strong, nonatomic) NSString *fileName;
 
 - (void)downloadFileAtURL:(NSURL *)url;
 

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <ACFileNavigatorKit/ACAlertView.h>
 
-@interface ACSettingsTableViewController : UITableViewController
+@interface ACSettingsTableViewController : UITableViewController <UITextFieldDelegate, ACAlertViewDelegate>
 
 @end

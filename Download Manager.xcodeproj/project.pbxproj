@@ -71,11 +71,26 @@
 		6316139C1AB9035C006EA71C /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6316139B1AB9035C006EA71C /* Media.xcassets */; };
 		631613A01AB906CE006EA71C /* ACColorSchemeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316139E1AB906CE006EA71C /* ACColorSchemeController.m */; };
 		631613A11AB906CE006EA71C /* ACColorSchemeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */; };
-		63CC6D3B1AB90A71003C8498 /* ACFileNavigatorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CC6D3A1AB90A71003C8498 /* ACFileNavigatorKit.framework */; };
 		63F4FFD81AC35FE20058874B /* ACiCloudViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63F4FFD71AC35FE20058874B /* ACiCloudViewController.m */; };
 		63F4FFDA1AC36D010058874B /* Cloud-Tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63F4FFD91AC36D010058874B /* Cloud-Tab@2x.png */; };
 		63F4FFDC1AC379470058874B /* Cloud-Tab@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63F4FFDB1AC379470058874B /* Cloud-Tab@3x.png */; };
+		ABF8CA861B56F2EA00747A0E /* ACFileNavigatorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB495C321B325503008A2A58 /* ACFileNavigatorKit.framework */; };
+		ABF8CA871B56F2EA00747A0E /* ACFileNavigatorKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AB495C321B325503008A2A58 /* ACFileNavigatorKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		ABF8CA881B56F2EA00747A0E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				ABF8CA871B56F2EA00747A0E /* ACFileNavigatorKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		631612641AB8D299006EA71C /* Download Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Download Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -150,12 +165,12 @@
 		6316139D1AB906CE006EA71C /* ACColorSchemeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACColorSchemeController.h; sourceTree = "<group>"; };
 		6316139E1AB906CE006EA71C /* ACColorSchemeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACColorSchemeController.m; sourceTree = "<group>"; };
 		6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ACColorSchemeController.xib; sourceTree = "<group>"; };
-		63CC6D3A1AB90A71003C8498 /* ACFileNavigatorKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ACFileNavigatorKit.framework; path = "../../Library/Developer/Xcode/DerivedData/ACFileNavigator-glnxizwrfktswjbdxostmeiakfgp/Build/Products/Debug-iphoneos/ACFileNavigatorKit.framework"; sourceTree = "<group>"; };
 		63F4FFD11AC35C340058874B /* Download Manager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Download Manager.entitlements"; sourceTree = "<group>"; };
 		63F4FFD61AC35FE20058874B /* ACiCloudViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACiCloudViewController.h; sourceTree = "<group>"; };
 		63F4FFD71AC35FE20058874B /* ACiCloudViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACiCloudViewController.m; sourceTree = "<group>"; };
 		63F4FFD91AC36D010058874B /* Cloud-Tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Cloud-Tab@2x.png"; sourceTree = "<group>"; };
 		63F4FFDB1AC379470058874B /* Cloud-Tab@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Cloud-Tab@3x.png"; sourceTree = "<group>"; };
+		AB495C321B325503008A2A58 /* ACFileNavigatorKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ACFileNavigatorKit.framework; path = "../../Library/Developer/Xcode/DerivedData/ACFileNavigator-bhcuuziuzmmgpidssupbeyozzmxn/Build/Products/Debug-iphoneos/ACFileNavigatorKit.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,10 +180,10 @@
 			files = (
 				631613351AB8E5E7006EA71C /* MediaPlayer.framework in Frameworks */,
 				631613331AB8E5DA006EA71C /* AVFoundation.framework in Frameworks */,
+				ABF8CA861B56F2EA00747A0E /* ACFileNavigatorKit.framework in Frameworks */,
 				631613311AB8E5D5006EA71C /* libz.dylib in Frameworks */,
 				6316132F1AB8E5D1006EA71C /* QuartzCore.framework in Frameworks */,
 				6316132D1AB8E5CD006EA71C /* CoreImage.framework in Frameworks */,
-				63CC6D3B1AB90A71003C8498 /* ACFileNavigatorKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,7 +254,7 @@
 		631613361AB8E5EE006EA71C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				63CC6D3A1AB90A71003C8498 /* ACFileNavigatorKit.framework */,
+				AB495C321B325503008A2A58 /* ACFileNavigatorKit.framework */,
 				631613931AB8E736006EA71C /* FNKIT RESOURCES */,
 				631613341AB8E5E7006EA71C /* MediaPlayer.framework */,
 				631613321AB8E5DA006EA71C /* AVFoundation.framework */,
@@ -325,6 +340,7 @@
 				631612601AB8D297006EA71C /* Sources */,
 				631612611AB8D297006EA71C /* Frameworks */,
 				631612621AB8D297006EA71C /* Resources */,
+				ABF8CA881B56F2EA00747A0E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -341,7 +357,7 @@
 		6316125C1AB8D296006EA71C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "A and C Studios";
 				TargetAttributes = {
 					631612631AB8D297006EA71C = {
@@ -550,12 +566,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Download Manager/Download Manager.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/ACFileNavigator-glnxizwrfktswjbdxostmeiakfgp/Build/Products/Debug-iphoneos",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/ACFileNavigator-bhcuuziuzmmgpidssupbeyozzmxn/Build/Products/Debug-iphoneos",
 				);
 				INFOPLIST_FILE = "Download Manager/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -568,12 +586,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Download Manager/Download Manager.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/ACFileNavigator-glnxizwrfktswjbdxostmeiakfgp/Build/Products/Debug-iphoneos",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/ACFileNavigator-bhcuuziuzmmgpidssupbeyozzmxn/Build/Products/Debug-iphoneos",
 				);
 				INFOPLIST_FILE = "Download Manager/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

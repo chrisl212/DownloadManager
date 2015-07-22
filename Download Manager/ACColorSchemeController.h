@@ -27,5 +27,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *color4Blue;
 
 - (IBAction)save:(id)sender;
+- (IBAction)reset:(id)sender;
 
 @end
