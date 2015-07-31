@@ -46,6 +46,55 @@
     _color4Red.text = [NSString stringWithFormat:@"%.0f", red];
     _color4Blue.text = [NSString stringWithFormat:@"%.0f", blue];
     _color4Green.text = [NSString stringWithFormat:@"%.0f", green];
+    
+    for (UITextField *textField in self.view.subviews)
+        if ([textField isKindOfClass:[UITextField class]])
+            [textField addTarget:self action:@selector(updateColorViews) forControlEvents:UIControlEventEditingChanged];
+    
+    self.color1View.layer.borderColor = [UIColor blackColor].CGColor;
+    self.color1View.layer.borderWidth = 1.0;
+    
+    self.color2View.layer.borderColor = [UIColor blackColor].CGColor;
+    self.color2View.layer.borderWidth = 1.0;
+    
+    self.color3View.layer.borderColor = [UIColor blackColor].CGColor;
+    self.color3View.layer.borderWidth = 1.0;
+    
+    self.color4View.layer.borderColor = [UIColor blackColor].CGColor;
+    self.color4View.layer.borderWidth = 1.0;
+    
+    [self updateColorViews];
+}
+
+- (void)updateColorViews
+{
+    double red1 = _color1Red.text.doubleValue/255.0;
+    double green1 = _color1Green.text.doubleValue/255.0;
+    double blue1 = _color1Blue.text.doubleValue/255.0;
+    
+    UIColor *color1 = [UIColor colorWithRed:red1 green:green1 blue:blue1 alpha:1.0];
+    self.color1View.backgroundColor = color1;
+    
+    double red2 = _color2Red.text.doubleValue/255.0;
+    double green2 = _color2Green.text.doubleValue/255.0;
+    double blue2 = _color2Blue.text.doubleValue/255.0;
+    
+    UIColor *color2 = [UIColor colorWithRed:red2 green:green2 blue:blue2 alpha:1.0];
+    self.color2View.backgroundColor = color2;
+
+    double red3 = _color3Red.text.doubleValue/255.0;
+    double green3 = _color3Green.text.doubleValue/255.0;
+    double blue3 = _color3Blue.text.doubleValue/255.0;
+    
+    UIColor *color3 = [UIColor colorWithRed:red3 green:green3 blue:blue3 alpha:1.0];
+    self.color3View.backgroundColor = color3;
+
+    double red4 = _color4Red.text.doubleValue/255.0;
+    double green4 = _color4Green.text.doubleValue/255.0;
+    double blue4 = _color4Blue.text.doubleValue/255.0;
+    
+    UIColor *color4 = [UIColor colorWithRed:red4 green:green4 blue:blue4 alpha:1.0];
+    self.color4View.backgroundColor = color4;
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,6 +128,8 @@
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(red3) green:RGB(green3) blue:RGB(blue3) alpha:1.0]] forKey:@"Color3"];
     
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(red4) green:RGB(green4) blue:RGB(blue4) alpha:1.0]] forKey:@"Color4"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"appearance" object:nil];
 }
 
 - (void)reset:(id)sender
@@ -106,6 +157,8 @@
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(red3) green:RGB(green3) blue:RGB(blue3) alpha:1.0]] forKey:@"Color3"];
     
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(red4) green:RGB(green4) blue:RGB(blue4) alpha:1.0]] forKey:@"Color4"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"appearance" object:nil];
 }
 
 @end

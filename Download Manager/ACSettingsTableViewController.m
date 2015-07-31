@@ -16,7 +16,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    settings = @{@"Files" : @[@{@"Downloadable Types" : @"ACDownloadTypesController"}, @{@"Add to iCloud" : @"BOOL"}], @"Appearance" : @[@{@"Color Scheme" : @"ACColorSchemeController"}, @{@"Font" : @"ALERT"}, @{@"Homepage" : @"TEXT FIELD"}], @"Support" : @[@{@"Support" : @"WEB VIEW"}]};
+    settings = @{@"Files" : @[@{@"Downloadable Types" : @"ACDownloadTypesController"}, @{@"Add to iCloud" : @"BOOL"}], @"Appearance" : @[@{@"Color Scheme" : @"ACColorSchemeController"},/* @{@"Font" : @"ALERT"}, */@{@"Homepage" : @"TEXT FIELD"}], @"Support" : @[@{@"Support" : @"WEB VIEW"}]};
     self.navigationItem.title = @"Settings";
 }
 

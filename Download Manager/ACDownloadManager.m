@@ -97,6 +97,10 @@
             NSLog(@"%@", error);
         
         [[NSFileManager defaultManager] removeItemAtPath:iCloudDirectoryPath error:nil];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshFiles" object:nil];
+        });
     });
 }
 

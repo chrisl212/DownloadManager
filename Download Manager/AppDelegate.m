@@ -20,6 +20,9 @@
 
 
 @implementation AppDelegate
+{
+    ACRootViewController *downloadsViewController;
+}
 
 - (NSString *)iCloudPath
 {
@@ -83,7 +86,7 @@
     [settingsNavController.navigationBar setTranslucent:NO];
     settingsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:2];
 
-    ACRootViewController *downloadsViewController = [[ACRootViewController alloc] init];
+    downloadsViewController = [[ACRootViewController alloc] init];
     UINavigationController *downloadsNavController = [[UINavigationController alloc] initWithRootViewController:downloadsViewController];
     [downloadsNavController.navigationBar setTranslucent:NO];
     downloadsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemDownloads tag:2];
@@ -99,6 +102,15 @@
     
     [self.window makeKeyAndVisible];
     
+    [self setAppearances];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setAppearances) name:@"appearance" object:nil];
+    
+    return YES;
+}
+
+- (void)setAppearances
+{
     [[UILabel appearance] setTextColor:SECONDARY_COLOR_1];
     [self.window setTintColor:SECONDARY_COLOR_2];
     [[UIBarButtonItem appearance] setTintColor:SECONDARY_COLOR_2];
@@ -114,6 +126,28 @@
     [[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
     
     [self.window setBackgroundColor:SECONDARY_COLOR_2];
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:url.lastPathComponent];
+    
+    NSError *error;
+    if (![[NSFileManager defaultManager] copyItemAtPath:url.path toPath:filePath error:&error])
+    {
+        ACAlertView *alertView = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Dismiss"]];
+        alertView.textView.text = error.description;
+        return NO;
+    }
+    
+    NSString *inboxFile = [[documentsDirectory stringByAppendingPathComponent:@"Inbox"] stringByAppendingPathComponent:filePath.lastPathComponent];
+    [[NSFileManager defaultManager] removeItemAtPath:inboxFile error:nil];
+    
+    [downloadsViewController updateFiles];
+    [downloadsViewController.tableView reloadData];
+    
     return YES;
 }
 

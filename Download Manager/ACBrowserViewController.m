@@ -36,7 +36,8 @@
     self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 10, 32)];
     self.addressTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"];
     //self.addressTextField.center = toolbar.center;//CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
-    self.addressTextField.keyboardType = UIKeyboardTypeURL;
+    self.addressTextField.keyboardType = UIKeyboardTypeWebSearch;
+    self.addressTextField.placeholder = @"Address or search Google";
     self.addressTextField.borderStyle = UITextBorderStyleRoundedRect;
     self.addressTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.addressTextField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -62,7 +63,8 @@
     refreshBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.webView action:@selector(reload)];
     self.navigationItem.rightBarButtonItem = refreshBarButton;
     
-    self.progressView = [[ACCircularProgressView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    self.progressView = [[ACCircularProgressView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    self.progressView.backgroundColor = [UIColor clearColor];
     progressViewBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.progressView];
     
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"❰" style:UIBarButtonItemStylePlain target:self.webView action:@selector(goBack)];
@@ -79,12 +81,19 @@
 
 - (void)changeAddress:(UITextField *)sender
 {
+    [sender resignFirstResponder];
+
     NSString *absoluteURL = sender.text;
-    if ([absoluteURL rangeOfString:@"http://" options:NSCaseInsensitiveSearch].location == NSNotFound && [absoluteURL rangeOfString:@"https://" options:NSCaseInsensitiveSearch].location == NSNotFound)
+    if ([absoluteURL rangeOfString:@" "].location != NSNotFound || [absoluteURL rangeOfString:@".*?(\\.)((?:[a-z][a-z]+))" options:NSRegularExpressionSearch].location == NSNotFound)
+    {
+        absoluteURL = [absoluteURL stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+        absoluteURL = [NSString stringWithFormat:@"https://www.google.com/webhp?ie=UTF-8#q=%@", absoluteURL];
+    }
+    else if ([absoluteURL rangeOfString:@"http://" options:NSCaseInsensitiveSearch].location == NSNotFound && [absoluteURL rangeOfString:@"https://" options:NSCaseInsensitiveSearch].location == NSNotFound)
     {
         absoluteURL = [@"http://" stringByAppendingString:sender.text];
     }
-    [sender resignFirstResponder];
+    
     NSURL *URL = [NSURL URLWithString:absoluteURL];
     NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
     [self.webView loadRequest:URLRequest];
