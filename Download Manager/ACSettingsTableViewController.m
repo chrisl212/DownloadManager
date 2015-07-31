@@ -16,7 +16,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    settings = @{@"Files" : @[@{@"Downloadable Types" : @"ACDownloadTypesController"}, @{@"Add to iCloud" : @"BOOL"}], @"Appearance" : @[@{@"Color Scheme" : @"ACColorSchemeController"},/* @{@"Font" : @"ALERT"}, */@{@"Homepage" : @"TEXT FIELD"}], @"Support" : @[@{@"Support" : @"WEB VIEW"}]};
+    settings = @{@"Files" : @[@{@"Downloadable Types" : @"ACDownloadTypesController"}, @{@"Add to iCloud" : @"BOOL"}], @"Appearance" : @[@{@"Color Scheme" : @"ACColorSchemeController"},/* @{@"Font" : @"ALERT"}, */@{@"Homepage" : @"TEXT FIELD"}, @{@"Search Engine" : @"SEGMENT"}], @"Support" : @[@{@"Support" : @"WEB VIEW"}]};
     self.navigationItem.title = @"Settings";
 }
 
@@ -48,7 +48,7 @@
     static NSString *cellID = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
     if (!cell)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
     
     cell.textLabel.text = [settings.allValues[indexPath.section][indexPath.row] allKeys][0];
     
@@ -62,7 +62,6 @@
     }
     else if ([cell.textLabel.text isEqualToString:@"Homepage"])
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
         cell.textLabel.text = [settings.allValues[indexPath.section][indexPath.row] allKeys][0];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
@@ -89,9 +88,24 @@
     }
     else if ([cell.textLabel.text isEqualToString:@"Font"])
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
         cell.textLabel.text = @"Font";
         cell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"font"];
+    }
+    else if ([cell.textLabel.text isEqualToString:@"Search Engine"])
+    {
+        NSString *currentSearchEngine = [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        UISegmentedControl *segment = [[UISegmentedControl alloc] initWithItems:@[@"Google", @"Yahoo", @"Bing"]];
+        [segment addTarget:self action:@selector(searchEngineChanged:) forControlEvents:UIControlEventValueChanged];
+        cell.accessoryView = segment;
+        
+        NSDictionary *titleAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize:12.0]};
+        [segment setTitleTextAttributes:titleAttributes forState:UIControlStateNormal];
+        
+        for (int i = 0; i < 3; i++)
+            if ([[segment titleForSegmentAtIndex:i] isEqualToString:currentSearchEngine])
+                [segment setSelectedSegmentIndex:i];
     }
     else
     {
@@ -101,6 +115,13 @@
     }
     
     return cell;
+}
+
+- (void)searchEngineChanged:(UISegmentedControl *)sender
+{
+    NSArray *items = @[@"Google", @"Yahoo", @"Bing"];
+    [[NSUserDefaults standardUserDefaults] setObject:items[[sender selectedSegmentIndex]] forKey:@"search engine"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"searchEngine" object:nil]; //for updating browser address text field placeholder
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -130,7 +151,7 @@
         [self.navigationController pushViewController:vc animated:YES];
         return;
     }
-    else if ([controllerName isEqualToString:@"TEXT FIELD"])
+    else if ([controllerName isEqualToString:@"TEXT FIELD"] || [controllerName isEqualToString:@"SEGMENT"] || [controllerName isEqualToString:@"BOOL"])
         return;
     else if ([controllerName isEqualToString:@"ALERT"])
     {

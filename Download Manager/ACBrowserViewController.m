@@ -37,7 +37,10 @@
     self.addressTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"];
     //self.addressTextField.center = toolbar.center;//CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
     self.addressTextField.keyboardType = UIKeyboardTypeWebSearch;
-    self.addressTextField.placeholder = @"Address or search Google";
+    
+    NSString *searchEngine = [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"];
+    self.addressTextField.placeholder = [NSString stringWithFormat:@"Enter address or search %@", searchEngine];
+    
     self.addressTextField.borderStyle = UITextBorderStyleRoundedRect;
     self.addressTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.addressTextField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -70,6 +73,14 @@
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"❰" style:UIBarButtonItemStylePlain target:self.webView action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = back;
     self.navigationItem.leftBarButtonItem.enabled = NO;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchEngineChanged) name:@"searchEngine" object:nil];
+}
+
+- (void)searchEngineChanged
+{
+    NSString *searchEngine = [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"];
+    self.addressTextField.placeholder = [NSString stringWithFormat:@"Enter address or search %@", searchEngine];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -87,7 +98,15 @@
     if ([absoluteURL rangeOfString:@" "].location != NSNotFound || [absoluteURL rangeOfString:@".*?(\\.)((?:[a-z][a-z]+))" options:NSRegularExpressionSearch].location == NSNotFound)
     {
         absoluteURL = [absoluteURL stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-        absoluteURL = [NSString stringWithFormat:@"https://www.google.com/webhp?ie=UTF-8#q=%@", absoluteURL];
+        
+        NSString *searchEngine = [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"];
+        
+        if ([searchEngine isEqualToString:@"Google"])
+            absoluteURL = [NSString stringWithFormat:@"https://www.google.com/webhp?ie=UTF-8#q=%@", absoluteURL];
+        else if ([searchEngine isEqualToString:@"Yahoo"])
+            absoluteURL = [NSString stringWithFormat:@"https://search.yahoo.com/search?p=%@", absoluteURL];
+        else if ([searchEngine isEqualToString:@"Bing"])
+            absoluteURL = [NSString stringWithFormat:@"http://www.bing.com/search?q=%@", absoluteURL];
     }
     else if ([absoluteURL rangeOfString:@"http://" options:NSCaseInsensitiveSearch].location == NSNotFound && [absoluteURL rangeOfString:@"https://" options:NSCaseInsensitiveSearch].location == NSNotFound)
     {

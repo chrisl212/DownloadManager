@@ -32,7 +32,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"])
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"]) //first launch
     {
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(52.0) green:RGB(102.0) blue:RGB(153.0) alpha:1.0]] forKey:@"Color1"];
         
@@ -43,6 +43,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(183.0) green:RGB(183.0) blue:RGB(183.0) alpha:1.0]] forKey:@"Color4"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"iCloud"];
         [[NSUserDefaults standardUserDefaults] setObject:@"https://google.com" forKey:@"homepage"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"Google" forKey:@"search engine"];
     }
     
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -121,6 +122,7 @@
     [[UIButton appearance] setTintColor:SECONDARY_COLOR_2];
     [[UIActionSheet appearance] setTintColor:SECONDARY_COLOR_1];
     [[UITextView appearance] setTintColor:SECONDARY_COLOR_1];
+    [[UISegmentedControl appearance] setTintColor:PRIMARY_COLOR];
     
     NSDictionary *navbarTitleTextAttributes = @{NSForegroundColorAttributeName : SECONDARY_COLOR_2};
     [[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
