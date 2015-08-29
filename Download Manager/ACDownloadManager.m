@@ -7,6 +7,7 @@
 //
 
 #import "ACDownloadManager.h"
+#import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 
 @implementation ACDownloadManager
 
@@ -81,25 +82,61 @@
         return;
     
     dispatch_async(dispatch_queue_create("com.a-c", NULL), ^{
+        if (![self iCloudPath])
+            return;
         NSString *iCloudDirectoryPath = [documentsDirectory stringByAppendingPathComponent:@".iCloud"];
         
-        [[NSFileManager defaultManager] createDirectoryAtPath:iCloudDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
+        NSError *error;
+        [[NSFileManager defaultManager] createDirectoryAtPath:iCloudDirectoryPath withIntermediateDirectories:YES attributes:nil error:&error];
+        if (error)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+                errorAlert.textView.text = [NSString stringWithFormat:@"Error creating iCloud directory - %@", error];
+                [errorAlert show];
+            });
+            return;
+        }
         
         NSString *iCloudFilePath = [iCloudDirectoryPath stringByAppendingPathComponent:fileName];
         NSString *iCloudFileContents = [NSString stringWithFormat:@"%@\n%@", fileName, connection.originalRequest.URL.absoluteString];
-        [iCloudFileContents writeToFile:iCloudFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        [iCloudFileContents writeToFile:iCloudFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        if (error)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+                errorAlert.textView.text = [NSString stringWithFormat:@"Error creating iCloud file in Documents directory - %@", error];
+                [errorAlert show];
+            });
+            return;
+        }
         
         NSString *iCloudPath = [self iCloudPath];
         
-        NSError *error;
         [[NSFileManager defaultManager] setUbiquitous:YES itemAtURL:[NSURL fileURLWithPath:iCloudFilePath] destinationURL:[NSURL fileURLWithPath:[iCloudPath stringByAppendingPathComponent:fileName]] error:&error];
         if (error)
-            NSLog(@"%@", error);
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+                errorAlert.textView.text = [NSString stringWithFormat:@"Error setting item as ubiquitous - %@", error];
+                if (error.code != 516) //this would show every time a file was redownloaded - annoying
+                    [errorAlert show];
+            });
+            error = nil;
+        }
         
-        [[NSFileManager defaultManager] removeItemAtPath:iCloudDirectoryPath error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:iCloudDirectoryPath error:&error];
+        if (error)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+                errorAlert.textView.text = [NSString stringWithFormat:@"Error removing iCloud directory - %@", error];
+                [errorAlert show];
+            });
+        }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshFiles" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:CLDirectoryViewControllerRefreshNotification object:nil];
         });
     });
 }

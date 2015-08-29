@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <ACFileNavigatorKit/ACAlertView.h>
+#import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 
 @interface ACDownloadManager : NSObject <NSURLConnectionDataDelegate, NSURLConnectionDelegate, ACAlertViewDelegate>
 

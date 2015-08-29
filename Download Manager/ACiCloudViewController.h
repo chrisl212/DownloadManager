@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <ACFileNavigatorKit/ACDirectoryViewController.h>
+#import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 
-@interface ACiCloudViewController : ACDirectoryViewController <ACAlertViewDelegate>
+@interface ACiCloudViewController : CLDirectoryViewController <ACAlertViewDelegate>
 
 @end

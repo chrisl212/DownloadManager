@@ -7,7 +7,7 @@
 //
 
 #import "ACBrowserViewController.h"
-#import <ACFileNavigatorKit/ACAlertView.h>
+#import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 #import "ACDownloadManager.h"
 
 @implementation ACBrowserViewController
@@ -21,9 +21,65 @@
     NSURL *requestURL;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+- (void)openMenu:(UILongPressGestureRecognizer *)sender
+{
+    if (sender.state != UIGestureRecognizerStateBegan)
+        return;
+    
+    NSString *JSString = @"function GetHTMLElementsAtPoint(x,y) { var tags = \"\";var e = document.elementFromPoint(x,y);while (e) {if (e.tagName == 'A') {tags += e.getAttribute('href') + ',';}e = e.parentNode;}return tags;}";
+    [self.webView stringByEvaluatingJavaScriptFromString:JSString];
+    
+    CGPoint pt = [sender locationInView:self.webView];
+    NSString *tags = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"GetHTMLElementsAtPoint(%ld,%ld);",(long)pt.x,(long)pt.y]];
+    if (tags.length > 0)
+    {
+        NSString *linkURLString = [tags componentsSeparatedByString:@","][0];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:linkURLString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Download" otherButtonTitles:@"Open", @"Copy", nil];
+        [actionSheet showInView:self.webView];
+    }
+}
+
+- (void)saveAsAlert:(NSTimer *)sender
+{
+    NSDictionary *userInfo = sender.userInfo;
+    
+    ACAlertView *actionSheetAlertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+    actionSheetAlertView.textField.text = [userInfo[@"link"] lastPathComponent];
+    [actionSheetAlertView show];
+    
+    requestURL = [NSURL URLWithString:userInfo[@"link"]];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+    NSString *linkURLString = actionSheet.title;
+    
+    if ([buttonTitle isEqualToString:@"Cancel"])
+        return;
+    else if ([buttonTitle isEqualToString:@"Download"])
+    {
+        NSTimer *alertTimer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(saveAsAlert:) userInfo:@{@"link" : linkURLString} repeats:NO];
+        [[NSRunLoop currentRunLoop] addTimer:alertTimer forMode:NSRunLoopCommonModes];
+    }
+    else if ([buttonTitle isEqualToString:@"Open"])
+    {
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:linkURLString]];
+        [self.webView loadRequest:request];
+    }
+    else if ([buttonTitle isEqualToString:@"Copy"])
+        [[UIPasteboard generalPasteboard] setString:linkURLString];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
     self.edgesForExtendedLayout=UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars=NO;
     self.automaticallyAdjustsScrollViewInsets=NO;
@@ -88,6 +144,11 @@
     [super viewWillAppear:animated];
     self.webView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height - toolbar.frame.size.height);
     self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0) + toolbar.frame.size.height/2.0);
+    
+    UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
+    longPressGestureRecognizer.minimumPressDuration = 0.5;
+    longPressGestureRecognizer.delegate = self;
+    [self.webView addGestureRecognizer:longPressGestureRecognizer];
 }
 
 - (void)changeAddress:(UITextField *)sender
@@ -108,11 +169,16 @@
         else if ([searchEngine isEqualToString:@"Bing"])
             absoluteURL = [NSString stringWithFormat:@"http://www.bing.com/search?q=%@", absoluteURL];
     }
-    else if ([absoluteURL rangeOfString:@"http://" options:NSCaseInsensitiveSearch].location == NSNotFound && [absoluteURL rangeOfString:@"https://" options:NSCaseInsensitiveSearch].location == NSNotFound)
+    else if ([absoluteURL rangeOfString:@"((?:http|https)(?::\\/{2}[\\w]+)(?:[\\/|\\.]?)(?:[^\\s""]*))" options:NSCaseInsensitiveSearch | NSRegularExpressionSearch].location == NSNotFound)
     {
         absoluteURL = [@"http://" stringByAppendingString:sender.text];
     }
-    
+    /*
+     <ul>
+     <li><a href="apps.html">Apps</a></li>
+     <li><a href="support.html">Support</a></li>
+     <li><a href="https://login.secureserver.net/?app=wbe&domain=a-cstudios.com">Mail</a></li>
+     </ul>*/
     NSURL *URL = [NSURL URLWithString:absoluteURL];
     NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
     [self.webView loadRequest:URLRequest];
@@ -212,6 +278,8 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
+
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     if (title.length > 0)
     {

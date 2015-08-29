@@ -9,8 +9,8 @@
 #import "AppDelegate.h"
 #import "ACBrowserViewController.h"
 #import "ACSettingsTableViewController.h"
-#import <ACFileNavigatorKit/ACRootViewController.h>
 #import "ACiCloudViewController.h"
+#import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 
 #define RGB(x) x/255.0
 #define PRIMARY_COLOR [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"]]
@@ -21,7 +21,7 @@
 
 @implementation AppDelegate
 {
-    ACRootViewController *downloadsViewController;
+    CLDirectoryViewController *downloadsViewController;
 }
 
 - (NSString *)iCloudPath
@@ -51,8 +51,26 @@
     NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
     if (![[NSFileManager defaultManager] fileExistsAtPath:dlTypesPath])
     {
-        [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DownloadTypes" ofType:@"plist"] toPath:dlTypesPath error:nil];
-        [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"MimeTypes" ofType:@"plist"] toPath:mimeTypesPath error:nil];
+        NSError *error;
+        [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DownloadTypes" ofType:@"plist"] toPath:dlTypesPath error:&error];
+        if (error)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+                errorAlert.textView.text = error.localizedDescription;
+                [errorAlert show];
+            });
+            error = nil;
+        }
+        [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"MimeTypes" ofType:@"plist"] toPath:mimeTypesPath error:&error];
+        if (error)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+                errorAlert.textView.text = error.localizedDescription;
+                [errorAlert show];
+            });
+        }
     }
     
     //directory for iCloud files
@@ -73,7 +91,6 @@
     self.window = [[UIWindow alloc] initWithFrame:applicationFrame];
     
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    tabBarController.tabBar.barTintColor = SECONDARY_COLOR_1;
     
     //each controller needs its own nav controller (other way was tested, failed)
     
@@ -87,7 +104,7 @@
     [settingsNavController.navigationBar setTranslucent:NO];
     settingsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:2];
 
-    downloadsViewController = [[ACRootViewController alloc] init];
+    downloadsViewController = [[CLDirectoryViewController alloc] init];
     UINavigationController *downloadsNavController = [[UINavigationController alloc] initWithRootViewController:downloadsViewController];
     [downloadsNavController.navigationBar setTranslucent:NO];
     downloadsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemDownloads tag:2];
@@ -112,22 +129,28 @@
 
 - (void)setAppearances
 {
+    //[[UINavigationBar appearance] setBarTintColor:PRIMARY_COLOR];
+    //NSDictionary *navbarTitleTextAttributes = @{NSForegroundColorAttributeName : SECONDARY_COLOR_2};
+    //[[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
+    /*
     [[UILabel appearance] setTextColor:SECONDARY_COLOR_1];
     [self.window setTintColor:SECONDARY_COLOR_2];
     [[UIBarButtonItem appearance] setTintColor:SECONDARY_COLOR_2];
-    [[UINavigationBar appearance] setBarTintColor:PRIMARY_COLOR];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UITextField appearance] setTintColor:SECONDARY_COLOR_1];
     [[UIToolbar appearance] setBarTintColor:TERTIARY_COLOR];
-    [[UIButton appearance] setTintColor:SECONDARY_COLOR_2];
+    [[UIButton appearance] setTintColor:TERTIARY_COLOR];
     [[UIActionSheet appearance] setTintColor:SECONDARY_COLOR_1];
     [[UITextView appearance] setTintColor:SECONDARY_COLOR_1];
     [[UISegmentedControl appearance] setTintColor:PRIMARY_COLOR];
+    [[UISlider appearance] setTintColor:TERTIARY_COLOR];
+    [[UISlider appearance] setMaximumTrackTintColor:TERTIARY_COLOR];
+    [[UISlider appearance] setMinimumTrackTintColor:PRIMARY_COLOR];
     
     NSDictionary *navbarTitleTextAttributes = @{NSForegroundColorAttributeName : SECONDARY_COLOR_2};
     [[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
     
-    [self.window setBackgroundColor:SECONDARY_COLOR_2];
+    [self.window setBackgroundColor:SECONDARY_COLOR_2]; */
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
@@ -139,16 +162,28 @@
     NSError *error;
     if (![[NSFileManager defaultManager] copyItemAtPath:url.path toPath:filePath error:&error])
     {
-        ACAlertView *alertView = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Dismiss"]];
-        alertView.textView.text = error.description;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+            errorAlert.textView.text = error.localizedDescription;
+            [errorAlert show];
+        });
+
         return NO;
     }
     
     NSString *inboxFile = [[documentsDirectory stringByAppendingPathComponent:@"Inbox"] stringByAppendingPathComponent:filePath.lastPathComponent];
-    [[NSFileManager defaultManager] removeItemAtPath:inboxFile error:nil];
+
+    [[NSFileManager defaultManager] removeItemAtPath:inboxFile error:&error];
+    if (error)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+            errorAlert.textView.text = error.localizedDescription;
+            [errorAlert show];
+        });
+    }
     
-    [downloadsViewController updateFiles];
-    [downloadsViewController.tableView reloadData];
+    [[NSNotificationCenter defaultCenter] postNotificationName:CLDirectoryViewControllerRefreshNotification object:nil];
     
     return YES;
 }

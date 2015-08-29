@@ -31,7 +31,7 @@
     if (tableView.isEditing)
         return;
     selectedIndex = indexPath;
-    ACAlertView *alertView = [[ACAlertView alloc] initWithTitle:@"iCloud File" style:ACAlertViewStyleTextView delegate:self buttonTitles:@[@"No", @"Yes"]];
+    ACAlertView *alertView = [[ACAlertView alloc] initWithTitle:@"Re-Download File" style:ACAlertViewStyleTextView delegate:self buttonTitles:@[@"No", @"Yes"]];
     alertView.textView.text = @"Tapping 'Yes' will download this file to your downloads directory. \nNOTE: This will overwrite a file with the same name, should one exist.";
     [alertView show];
 }
@@ -49,8 +49,21 @@
         return;
     }
     
-    ACFile *file = self.files[selectedIndex.row];
-    NSString *fileContents = [NSString stringWithContentsOfFile:file.filePath encoding:NSUTF8StringEncoding error:nil];
+    CLFile *file = self.files[selectedIndex.row];
+    
+    NSError *error;
+    NSString *fileContents = [NSString stringWithContentsOfFile:file.filePath encoding:NSUTF8StringEncoding error:&error];
+    if (error)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+            errorAlert.textView.text = error.localizedDescription;
+            [errorAlert show];
+        });
+        
+        return;
+    }
+    
     NSString *fileURLString = [fileContents componentsSeparatedByString:@"\n"][1];
     
     ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
