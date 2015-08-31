@@ -32,16 +32,20 @@
         return;
     
     NSString *JSString = @"function GetHTMLElementsAtPoint(x,y) { var tags = \"\";var e = document.elementFromPoint(x,y);while (e) {if (e.tagName == 'A') {tags += e.getAttribute('href') + ',';}e = e.parentNode;}return tags;}";
-    [self.webView stringByEvaluatingJavaScriptFromString:JSString];
+    [self.webView evaluateJavaScript:JSString completionHandler:nil];
     
     CGPoint pt = [sender locationInView:self.webView];
-    NSString *tags = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"GetHTMLElementsAtPoint(%ld,%ld);",(long)pt.x,(long)pt.y]];
-    if (tags.length > 0)
-    {
-        NSString *linkURLString = [tags componentsSeparatedByString:@","][0];
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:linkURLString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Download" otherButtonTitles:@"Open", @"Copy", nil];
-        [actionSheet showInView:self.webView];
-    }
+    __block NSString *tags;
+    [self.webView evaluateJavaScript:[NSString stringWithFormat:@"GetHTMLElementsAtPoint(%ld,%ld);",(long)pt.x,(long)pt.y] completionHandler:^(id obj, NSError *err)
+                      {
+                          tags = obj;
+                          if (tags.length > 0)
+                          {
+                              NSString *linkURLString = [tags componentsSeparatedByString:@","][0];
+                              UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:linkURLString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Download" otherButtonTitles:@"Open", @"Copy", nil];
+                              [actionSheet showInView:self.webView];
+                          }
+                      }];
 }
 
 - (void)saveAsAlert:(NSTimer *)sender
@@ -76,6 +80,27 @@
         [[UIPasteboard generalPasteboard] setString:linkURLString];
 }
 
+- (void)downloadAddressBar
+{
+    NSURL *URL = self.webView.URL;
+    
+    ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+    alertView.textField.text = URL.lastPathComponent;
+    [alertView show];
+    
+    requestURL = URL;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"estimatedProgress"])
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.progressView.progress = self.webView.estimatedProgress;
+        });
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -83,13 +108,8 @@
     self.edgesForExtendedLayout=UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars=NO;
     self.automaticallyAdjustsScrollViewInsets=NO;
-    
-    toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
-    toolbar.center = CGPointMake(self.view.frame.size.width/2.0, toolbar.frame.size.height/2.0);
-    //toolbar.barTintColor = [UIColor redColor];
-    [self.view addSubview:toolbar];
-    
-    self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 10, 32)];
+
+    self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 32)];
     self.addressTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"];
     //self.addressTextField.center = toolbar.center;//CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
     self.addressTextField.keyboardType = UIKeyboardTypeWebSearch;
@@ -100,37 +120,55 @@
     self.addressTextField.borderStyle = UITextBorderStyleRoundedRect;
     self.addressTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.addressTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.addressTextField.clearButtonMode = UITextFieldViewModeUnlessEditing;
+    self.addressTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.addressTextField.backgroundColor = [UIColor whiteColor];
     self.addressTextField.returnKeyType = UIReturnKeyGo;
     [self.addressTextField addTarget:self action:@selector(changeAddress:) forControlEvents:UIControlEventEditingDidEndOnExit];
+    [self.addressTextField addTarget:self action:@selector(displayAddress) forControlEvents:UIControlEventEditingDidBegin];
+    self.navigationItem.titleView = self.addressTextField;
     
-    UIBarButtonItem *textFieldBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.addressTextField];
-    UIBarButtonItem *flex1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *flex2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    //UIBarButtonItem *textFieldBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.addressTextField];
 
-    toolbar.items = @[flex1, textFieldBarButton, flex2];
-    
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-    self.webView.delegate = self;
+    self.webView = [[WKWebView alloc] initWithFrame:CGRectZero];
+    self.webView.navigationDelegate = self;
+    self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    self.webView.allowsBackForwardNavigationGestures = YES;
+    [self.webView addObserver:self forKeyPath:@"estimatedProgress" options:kNilOptions context:NULL];
+    self.webView.scrollView.delegate = self;
     [self.view addSubview:_webView];
     
     NSURL *URL = [NSURL URLWithString:_addressTextField.text];
     NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
     [self.webView loadRequest:URLRequest];
     
-    refreshBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.webView action:@selector(reload)];
-    self.navigationItem.rightBarButtonItem = refreshBarButton;
     
-    self.progressView = [[ACCircularProgressView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    self.progressView = [[ACCircularProgressView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     self.progressView.backgroundColor = [UIColor clearColor];
+    self.progressView.lineWidth = 2.5;
     progressViewBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.progressView];
     
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"❰" style:UIBarButtonItemStylePlain target:self.webView action:@selector(goBack)];
-    self.navigationItem.leftBarButtonItem = back;
-    self.navigationItem.leftBarButtonItem.enabled = NO;
+    refreshBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.webView action:@selector(reload)];
+    
+    [self.navigationController setToolbarHidden:NO];
+    [self setUpToolbar:NO];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchEngineChanged) name:@"searchEngine" object:nil];
+}
+
+- (void)setUpToolbar:(BOOL)isLoading
+{
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back-50.png"] style:UIBarButtonItemStylePlain target:self.webView action:@selector(goBack)];
+    back.enabled = self.webView.canGoBack;
+    UIBarButtonItem *forward = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"forward-50.png"] style:UIBarButtonItemStylePlain target:self.webView action:@selector(goForward)];
+    forward.enabled = self.webView.canGoForward;
+    
+    UIBarButtonItem *flex1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *flex2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *flex3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *download = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download.png"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadAddressBar)];
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self.webView action:@selector(stopLoading)];
+    
+    self.toolbarItems = @[back, flex1, (isLoading) ? stop : download, flex2, (isLoading) ? progressViewBarButton : refreshBarButton, flex3, forward];
 }
 
 - (void)searchEngineChanged
@@ -149,6 +187,12 @@
     longPressGestureRecognizer.minimumPressDuration = 0.5;
     longPressGestureRecognizer.delegate = self;
     [self.webView addGestureRecognizer:longPressGestureRecognizer];
+}
+
+- (void)displayAddress
+{
+    self.addressTextField.textAlignment = NSTextAlignmentLeft;
+    self.addressTextField.text = self.webView.URL.absoluteString;
 }
 
 - (void)changeAddress:(UITextField *)sender
@@ -173,12 +217,7 @@
     {
         absoluteURL = [@"http://" stringByAppendingString:sender.text];
     }
-    /*
-     <ul>
-     <li><a href="apps.html">Apps</a></li>
-     <li><a href="support.html">Support</a></li>
-     <li><a href="https://login.secureserver.net/?app=wbe&domain=a-cstudios.com">Mail</a></li>
-     </ul>*/
+
     NSURL *URL = [NSURL URLWithString:absoluteURL];
     NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
     [self.webView loadRequest:URLRequest];
@@ -194,10 +233,9 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
 {
+    [connection cancel];
     if (response.statusCode == 200)
     {
-        self.navigationItem.rightBarButtonItem = progressViewBarButton;
-        
         expectedLength = response.expectedContentLength;
         downloadedData = [NSMutableData data];
         
@@ -217,77 +255,81 @@
                 [alertView show];
                 
                 requestURL = connection.originalRequest.URL;
-                [connection cancel];
             }
         }
-
     }
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    [downloadedData appendData:data];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.progressView.progress = data.length/expectedLength;
-    });
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    self.navigationItem.rightBarButtonItem = refreshBarButton;
-    
-    [self.webView loadData:downloadedData MIMEType:MIMEType textEncodingName:@"utf-8" baseURL:connection.originalRequest.URL];
 }
 
 #pragma mark - Web View Delegate
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
 {
-    self.addressTextField.text = request.URL.absoluteString;
-    self.navigationItem.leftBarButtonItem.enabled = self.webView.canGoBack;
+    self.addressTextField.textAlignment = NSTextAlignmentLeft;
+    self.addressTextField.text = webView.URL.absoluteString;
+    [self setUpToolbar:YES];
     
-
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
     
     NSArray *typesArray = [NSArray arrayWithContentsOfFile:dlTypesPath];
     
-    NSString *requestFileType = [[request.URL.absoluteString componentsSeparatedByString:@"?"][0] pathExtension];
+    NSString *requestFileType = [[webView.URL.absoluteString componentsSeparatedByString:@"?"][0] pathExtension];
     for (NSString *type in typesArray)
     {
         if ([type caseInsensitiveCompare:requestFileType] == NSOrderedSame)
         {
             ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
-            alertView.textField.text = request.URL.lastPathComponent;
+            alertView.textField.text = webView.URL.lastPathComponent;
             [alertView show];
-
-            requestURL = request.URL;
             
-            return NO;
+            requestURL = webView.URL;
+            
+            return;
         }
     }
     
-    if (navigationType == UIWebViewNavigationTypeOther)
-        return YES;
-    
+    NSURLRequest *request = [NSURLRequest requestWithURL:webView.URL];
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
-    [connection start];
-    
-    return NO;
+    [connection start]; 
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
+    [self webView:webView didFinishNavigation:navigation];
+}
 
-    NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    if (title.length > 0)
-    {
-        self.navigationItem.title = title;
-    }
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    [webView evaluateJavaScript:@"document.body.style.webkitTouchCallout='none';" completionHandler:nil];
     
-    if (self.webView.canGoBack) self.navigationItem.leftBarButtonItem.enabled = YES;
-    else self.navigationItem.leftBarButtonItem.enabled = NO;
+    [webView evaluateJavaScript:@"document.title" completionHandler:^(id obj, NSError *err)
+                       {
+                           NSString *title = obj;
+                           if (title.length > 0)
+                           {
+                               self.addressTextField.text = title;
+                               self.addressTextField.textAlignment = NSTextAlignmentCenter;
+                           }
+                           else
+                           {
+                               self.addressTextField.text = webView.URL.absoluteString;
+                               self.addressTextField.textAlignment = NSTextAlignmentLeft;
+                           }
+                       }];
+    [self setUpToolbar:NO];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if ([scrollView.panGestureRecognizer translationInView:scrollView.superview].y > 0)
+    {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        [self.navigationController setToolbarHidden:NO animated:YES];
+    } else
+    {
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+        [self.navigationController setToolbarHidden:YES animated:YES];
+    }
 }
 
 #pragma mark - Alert View Delegate

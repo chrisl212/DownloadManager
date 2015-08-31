@@ -13,7 +13,7 @@
                 <navigationBar contentMode="scaleToFill" translucent="NO" id="G9H-CA-zW5">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="74"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <color key="barTintColor" red="0.20392156862745098" green="0.40000000000000002" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="barTintColor" red="0.66666666666666663" green="0.22352941176470587" blue="0.22352941176470587" alpha="1" colorSpace="calibratedRGB"/>
                     <items>
                         <navigationItem prompt=" " id="epg-rd-vyS"/>
                     </items>
@@ -23,20 +23,28 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <items>
-                        <tabBarItem systemItem="search" id="Qeg-s6-6Ue"/>
+                        <tabBarItem title="Internet" image="domain-50.png" id="Qeg-s6-6Ue"/>
                         <tabBarItem systemItem="downloads" id="n17-Fi-DDZ"/>
-                        <tabBarItem title="iCloud" image="Cloud-Tab.png" id="VmX-Le-Zc0"/>
+                        <tabBarItem title="iCloud" image="cloud_storage-50.png" id="VmX-Le-Zc0"/>
                         <tabBarItem systemItem="more" id="xrB-hc-VKh"/>
                     </items>
                     <color key="barTintColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                 </tabBar>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ne6-7w-Pc8">
+                    <rect key="frame" x="0.0" y="475" width="320" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <items/>
+                    <color key="barTintColor" red="0.66666666669999997" green="0.22352941179999999" blue="0.22352941179999999" alpha="1" colorSpace="calibratedRGB"/>
+                </toolbar>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <nil key="simulatedBottomBarMetrics"/>
             <point key="canvasLocation" x="548" y="455"/>
         </view>
     </objects>
     <resources>
-        <image name="Cloud-Tab.png" width="25" height="25"/>
+        <image name="cloud_storage-50.png" width="25" height="25"/>
+        <image name="domain-50.png" width="25" height="25"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

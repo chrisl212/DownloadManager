@@ -11,6 +11,7 @@
 #import "ACSettingsTableViewController.h"
 #import "ACiCloudViewController.h"
 #import <CLFileNavigatorKit/CLFileNavigatorKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 #define RGB(x) x/255.0
 #define PRIMARY_COLOR [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"]]
@@ -34,13 +35,13 @@
 {
     if (![[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"]) //first launch
     {
-        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(52.0) green:RGB(102.0) blue:RGB(153.0) alpha:1.0]] forKey:@"Color1"];
-        
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(170.0) green:RGB(57.0) blue:RGB(57.0) alpha:1.0]] forKey:@"Color1"];
+
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(102.0) green:RGB(102.0) blue:RGB(102.0) alpha:1.0]] forKey:@"Color2"];
-        
+            
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor whiteColor]] forKey:@"Color3"];
-    
-        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(183.0) green:RGB(183.0) blue:RGB(183.0) alpha:1.0]] forKey:@"Color4"];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(255.0) green:RGB(170.0) blue:RGB(170.0) alpha:1.0]] forKey:@"Color4"];
+        
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"iCloud"];
         [[NSUserDefaults standardUserDefaults] setObject:@"https://google.com" forKey:@"homepage"];
         [[NSUserDefaults standardUserDefaults] setObject:@"Google" forKey:@"search engine"];
@@ -93,12 +94,14 @@
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     
     //each controller needs its own nav controller (other way was tested, failed)
-    
+    [self setAppearances];
+
     ACBrowserViewController *browserController = [[ACBrowserViewController alloc] init];
     UINavigationController *browserNavController = [[UINavigationController alloc] initWithRootViewController:browserController];
     [browserNavController.navigationBar setTranslucent:NO];
-    browserNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
-
+    browserNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Internet" image:[UIImage imageNamed:@"domain-50.png"] tag:0];
+    browserNavController.tabBarItem.selectedImage = [UIImage imageNamed:@"domain_filled-50.png"];
+    
     ACSettingsTableViewController *settingsViewController = [[ACSettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
     UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
     [settingsNavController.navigationBar setTranslucent:NO];
@@ -112,15 +115,14 @@
     ACiCloudViewController *iCloudViewController = [[ACiCloudViewController alloc] initWithDirectoryPath:[self iCloudPath]];
     UINavigationController *iCloudNavController = [[UINavigationController alloc] initWithRootViewController:iCloudViewController];
     [iCloudNavController.navigationBar setTranslucent:NO];
-    iCloudNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"iCloud" image:[UIImage imageNamed:@"Cloud-Tab.png"] tag:3];
-
+    iCloudNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"iCloud" image:[UIImage imageNamed:@"cloud_storage-50.png"] tag:3];
+    iCloudNavController.tabBarItem.selectedImage = [UIImage imageNamed:@"cloud_storage_filled-50.png"];
+    
     tabBarController.viewControllers = @[browserNavController, downloadsNavController, iCloudNavController, settingsNavController];
 
     self.window.rootViewController = tabBarController;
     
     [self.window makeKeyAndVisible];
-    
-    [self setAppearances];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setAppearances) name:@"appearance" object:nil];
     
@@ -129,28 +131,34 @@
 
 - (void)setAppearances
 {
-    //[[UINavigationBar appearance] setBarTintColor:PRIMARY_COLOR];
-    //NSDictionary *navbarTitleTextAttributes = @{NSForegroundColorAttributeName : SECONDARY_COLOR_2};
-    //[[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
-    /*
     [[UILabel appearance] setTextColor:SECONDARY_COLOR_1];
-    [self.window setTintColor:SECONDARY_COLOR_2];
     [[UIBarButtonItem appearance] setTintColor:SECONDARY_COLOR_2];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UITextField appearance] setTintColor:SECONDARY_COLOR_1];
-    [[UIToolbar appearance] setBarTintColor:TERTIARY_COLOR];
-    [[UIButton appearance] setTintColor:TERTIARY_COLOR];
+    [[UIToolbar appearance] setBarTintColor:PRIMARY_COLOR];
+    [[UIToolbar appearance] setTintColor:SECONDARY_COLOR_2];
+    [[UIButton appearance] setTintColor:PRIMARY_COLOR];
+    [[UINavigationBar appearance] setTintColor:SECONDARY_COLOR_2];
     [[UIActionSheet appearance] setTintColor:SECONDARY_COLOR_1];
     [[UITextView appearance] setTintColor:SECONDARY_COLOR_1];
     [[UISegmentedControl appearance] setTintColor:PRIMARY_COLOR];
-    [[UISlider appearance] setTintColor:TERTIARY_COLOR];
-    [[UISlider appearance] setMaximumTrackTintColor:TERTIARY_COLOR];
-    [[UISlider appearance] setMinimumTrackTintColor:PRIMARY_COLOR];
-    
+    [[UIProgressView appearance] setTintColor:SECONDARY_COLOR_1];
     NSDictionary *navbarTitleTextAttributes = @{NSForegroundColorAttributeName : SECONDARY_COLOR_2};
     [[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
+    [[UITabBar appearance] setBarTintColor:SECONDARY_COLOR_1];
+    [[UITabBar appearance] setTintColor:SECONDARY_COLOR_2];
+    [[UINavigationBar appearance] setTranslucent:NO];
+    [[UIToolbar appearance] setTranslucent:NO];
     
-    [self.window setBackgroundColor:SECONDARY_COLOR_2]; */
+    [[UISlider appearance] setTintColor:SECONDARY_COLOR_1];
+    [[UISlider appearance] setMinimumTrackTintColor:PRIMARY_COLOR];
+    [[UINavigationBar appearance] setBarTintColor:PRIMARY_COLOR];
+    [[MPVolumeView appearance] setTintColor:PRIMARY_COLOR];
+    [[UISlider appearance] setMaximumTrackTintColor:SECONDARY_COLOR_1];
+    [[UITableViewCell appearance] setTintColor:PRIMARY_COLOR];
+    
+    [self.window setBackgroundColor:SECONDARY_COLOR_2];
+    [self.window setTintColor:SECONDARY_COLOR_2];
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
@@ -213,6 +221,31 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+@end
+
+@interface CLAudioPlayerViewController (SliderColor)
+
+@end
+
+@implementation CLAudioPlayerViewController (SliderColor)
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    for (UISlider *slider in self.view.subviews)
+        if ([slider isKindOfClass:[UISlider class]])
+        {
+            slider.maximumTrackTintColor = SECONDARY_COLOR_1;
+            slider.minimumTrackTintColor = PRIMARY_COLOR;
+        }
+    for (UISlider *slider in self.volumeSlider.subviews)
+        if ([slider isKindOfClass:[UISlider class]])
+        {
+            slider.maximumTrackTintColor = SECONDARY_COLOR_1;
+            slider.minimumTrackTintColor = PRIMARY_COLOR;
+        }
 }
 
 @end

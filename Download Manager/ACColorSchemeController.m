@@ -134,9 +134,9 @@
 
 - (void)reset:(id)sender
 {
-    double red1 = 52.0;
-    double green1 = 102.0;
-    double blue1 = 153.0;
+    double red1 = 170.0;
+    double green1 = 57.0;
+    double blue1 = 57.0;
     
     double red2 = 102.0;
     double green2 = 102.0;
@@ -146,9 +146,9 @@
     double green3 = 255.0;
     double blue3 = 255.0;
     
-    double red4 = 183.0;
-    double green4 = 183.0;
-    double blue4 = 183.0;
+    double red4 = 255.0;
+    double green4 = 170.0;
+    double blue4 = 170.0;
     
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(red1) green:RGB(green1) blue:RGB(blue1) alpha:1.0]] forKey:@"Color1"];
     

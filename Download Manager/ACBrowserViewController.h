@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <CLFileNavigatorKit/CLFileNavigatorKit.h>
+#import <WebKit/WebKit.h>
 
-@interface ACBrowserViewController : UIViewController <UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ACAlertViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate>
+@interface ACBrowserViewController : UIViewController <WKNavigationDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ACAlertViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UIScrollViewDelegate>
 
-@property (strong, nonatomic) UIWebView *webView;
+@property (strong, nonatomic) WKWebView *webView;
 @property (strong, nonatomic) UITextField *addressTextField;
 @property (strong, nonatomic) ACCircularProgressView *progressView;
 
