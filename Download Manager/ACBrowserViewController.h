@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 #import <WebKit/WebKit.h>
+#import "ACTextField.h"
 
-@interface ACBrowserViewController : UIViewController <WKNavigationDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ACAlertViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UIScrollViewDelegate>
+@interface ACBrowserViewController : UIViewController <WKNavigationDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ACAlertViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITextFieldDelegate>
 
 @property (strong, nonatomic) WKWebView *webView;
-@property (strong, nonatomic) UITextField *addressTextField;
+@property (strong, nonatomic) ACTextField *addressTextField;
 @property (strong, nonatomic) ACCircularProgressView *progressView;
 
 @end

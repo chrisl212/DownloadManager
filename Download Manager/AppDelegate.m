@@ -12,6 +12,8 @@
 #import "ACiCloudViewController.h"
 #import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import "ACTextField.h"
 
 #define RGB(x) x/255.0
 #define PRIMARY_COLOR [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"Color1"]]
@@ -40,54 +42,15 @@
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(102.0) green:RGB(102.0) blue:RGB(102.0) alpha:1.0]] forKey:@"Color2"];
             
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor whiteColor]] forKey:@"Color3"];
-        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(255.0) green:RGB(170.0) blue:RGB(170.0) alpha:1.0]] forKey:@"Color4"];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(210.0) green:RGB(210.0) blue:RGB(210.0) alpha:1.0]] forKey:@"Color4"];
         
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"iCloud"];
         [[NSUserDefaults standardUserDefaults] setObject:@"https://google.com" forKey:@"homepage"];
         [[NSUserDefaults standardUserDefaults] setObject:@"Google" forKey:@"search engine"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"Modification" forKey:@"date"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"thumbnails"];
     }
-    
-    NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
-    NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:dlTypesPath])
-    {
-        NSError *error;
-        [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DownloadTypes" ofType:@"plist"] toPath:dlTypesPath error:&error];
-        if (error)
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
-                errorAlert.textView.text = error.localizedDescription;
-                [errorAlert show];
-            });
-            error = nil;
-        }
-        [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"MimeTypes" ofType:@"plist"] toPath:mimeTypesPath error:&error];
-        if (error)
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
-                errorAlert.textView.text = error.localizedDescription;
-                [errorAlert show];
-            });
-        }
-    }
-    
-    //directory for iCloud files
-    //NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    //NSString *iCloudDirectoryPath = [documentsDirectory stringByAppendingPathComponent:@".iCloud"];
-    //if (![[NSFileManager defaultManager] fileExistsAtPath:iCloudDirectoryPath])
-        //[[NSFileManager defaultManager] createDirectoryAtPath:iCloudDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
-    /*
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSError *error;
-        [[NSFileManager defaultManager] copyItemAtURL:[NSURL fileURLWithPath:[self iCloudPath]] toURL:[NSURL fileURLWithPath:iCloudDirectoryPath] error:&error];
-        if (error)
-            NSLog(@"%@", error);
-    } ); */
-    
-    
+
     CGRect applicationFrame = [[UIScreen mainScreen] bounds];
     self.window = [[UIWindow alloc] initWithFrame:applicationFrame];
     
@@ -149,6 +112,8 @@
     [[UITabBar appearance] setTintColor:SECONDARY_COLOR_2];
     [[UINavigationBar appearance] setTranslucent:NO];
     [[UIToolbar appearance] setTranslucent:NO];
+    [[UIBarButtonItem appearance] setTintColor:SECONDARY_COLOR_2];
+    [[ACTextField appearance] setTextFieldTintColor:TERTIARY_COLOR];
     
     [[UISlider appearance] setTintColor:SECONDARY_COLOR_1];
     [[UISlider appearance] setMinimumTrackTintColor:PRIMARY_COLOR];

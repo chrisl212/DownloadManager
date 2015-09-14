@@ -34,17 +34,6 @@
         if ([alert isKindOfClass:[ACAlertView class]])
             self.alertView = alert;
     }
-    NSString *downloadsFilePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"Downloads.plist"];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:downloadsFilePath])
-    {
-        [[NSFileManager defaultManager] createFileAtPath:downloadsFilePath contents:nil attributes:nil];
-        [@[] writeToFile:downloadsFilePath atomically:YES];
-    }
-    NSMutableArray *downloadsArray = [[NSArray arrayWithContentsOfFile:downloadsFilePath] mutableCopy];
-    NSDictionary *downloadDictionary = @{@"URL": url.absoluteString, @"File Name" : url.absoluteString.lastPathComponent, @"Progess" : [NSNumber numberWithDouble:0.0]};
-    [downloadsArray addObject:downloadDictionary];
-    [downloadsArray writeToFile:downloadsFilePath atomically:YES];
-    
     self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:url] delegate:self];
     [self.connection start];
 }

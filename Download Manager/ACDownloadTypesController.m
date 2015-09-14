@@ -14,7 +14,32 @@
 {
     if (self = [super initWithStyle:UITableViewStyleGrouped])
     {
-        
+        NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
+        NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:dlTypesPath])
+        {
+            NSError *error;
+            [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DownloadTypes" ofType:@"plist"] toPath:dlTypesPath error:&error];
+            if (error)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+                    errorAlert.textView.text = error.localizedDescription;
+                    [errorAlert show];
+                });
+                error = nil;
+            }
+            [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"MimeTypes" ofType:@"plist"] toPath:mimeTypesPath error:&error];
+            if (error)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+                    errorAlert.textView.text = error.localizedDescription;
+                    [errorAlert show];
+                });
+            }
+        }
     }
     return self;
 }
@@ -76,6 +101,7 @@
         }
 
         [alertView dismiss];
+        [self.tableView reloadData];
     }
 }
 

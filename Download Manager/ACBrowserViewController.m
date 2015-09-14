@@ -9,15 +9,13 @@
 #import "ACBrowserViewController.h"
 #import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 #import "ACDownloadManager.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @implementation ACBrowserViewController
 {
-    NSMutableData *downloadedData;
-    long long expectedLength;
     UIBarButtonItem *refreshBarButton;
     UIBarButtonItem *progressViewBarButton;
     NSString *MIMEType;
-    UIToolbar *toolbar;
     NSURL *requestURL;
 }
 
@@ -31,7 +29,7 @@
     if (sender.state != UIGestureRecognizerStateBegan)
         return;
     
-    NSString *JSString = @"function GetHTMLElementsAtPoint(x,y) { var tags = \"\";var e = document.elementFromPoint(x,y);while (e) {if (e.tagName == 'A') {tags += e.getAttribute('href') + ',';}e = e.parentNode;}return tags;}";
+    NSString *JSString = @"function GetHTMLElementsAtPoint(x,y) { var tags = \"\";var e = document.elementFromPoint(x,y);while (e) {if (e.tagName == 'A') {tags += e.getAttribute('href') + ',';} else if (e.tagName == 'IMG') { tags += e.getAttribute('src') + ',';}e = e.parentNode;}return tags;}";
     [self.webView evaluateJavaScript:JSString completionHandler:nil];
     
     CGPoint pt = [sender locationInView:self.webView];
@@ -56,7 +54,7 @@
     actionSheetAlertView.textField.text = [userInfo[@"link"] lastPathComponent];
     [actionSheetAlertView show];
     
-    requestURL = [NSURL URLWithString:userInfo[@"link"]];
+    requestURL = [NSURL URLWithString:[userInfo[@"link"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -109,7 +107,7 @@
     self.extendedLayoutIncludesOpaqueBars=NO;
     self.automaticallyAdjustsScrollViewInsets=NO;
 
-    self.addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 32)];
+    self.addressTextField = [[ACTextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 32)];
     self.addressTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"];
     //self.addressTextField.center = toolbar.center;//CGPointMake(self.view.frame.size.width/2.0, self.addressTextField.frame.size.height/2.0);
     self.addressTextField.keyboardType = UIKeyboardTypeWebSearch;
@@ -124,7 +122,7 @@
     self.addressTextField.backgroundColor = [UIColor whiteColor];
     self.addressTextField.returnKeyType = UIReturnKeyGo;
     [self.addressTextField addTarget:self action:@selector(changeAddress:) forControlEvents:UIControlEventEditingDidEndOnExit];
-    [self.addressTextField addTarget:self action:@selector(displayAddress) forControlEvents:UIControlEventEditingDidBegin];
+    self.addressTextField.delegate = self;
     self.navigationItem.titleView = self.addressTextField;
     
     //UIBarButtonItem *textFieldBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.addressTextField];
@@ -137,10 +135,14 @@
     self.webView.scrollView.delegate = self;
     [self.view addSubview:_webView];
     
+    UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
+    longPressGestureRecognizer.minimumPressDuration = 0.5;
+    longPressGestureRecognizer.delegate = self;
+    [self.webView addGestureRecognizer:longPressGestureRecognizer];
+    
     NSURL *URL = [NSURL URLWithString:_addressTextField.text];
     NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
     [self.webView loadRequest:URLRequest];
-    
     
     self.progressView = [[ACCircularProgressView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     self.progressView.backgroundColor = [UIColor clearColor];
@@ -180,19 +182,19 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.webView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height - toolbar.frame.size.height);
-    self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0) + toolbar.frame.size.height/2.0);
-    
-    UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
-    longPressGestureRecognizer.minimumPressDuration = 0.5;
-    longPressGestureRecognizer.delegate = self;
-    [self.webView addGestureRecognizer:longPressGestureRecognizer];
+    self.webView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height);// - toolbar.frame.size.height);
+    self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0));// + toolbar.frame.size.height/2.0);
 }
 
-- (void)displayAddress
+- (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     self.addressTextField.textAlignment = NSTextAlignmentLeft;
     self.addressTextField.text = self.webView.URL.absoluteString;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UITextRange *range = [textField textRangeFromPosition:textField.beginningOfDocument toPosition:textField.endOfDocument];
+        [textField setSelectedTextRange:range];
+    });
 }
 
 - (void)changeAddress:(UITextField *)sender
@@ -236,9 +238,6 @@
     [connection cancel];
     if (response.statusCode == 200)
     {
-        expectedLength = response.expectedContentLength;
-        downloadedData = [NSMutableData data];
-        
         MIMEType = [response MIMEType];
         
         NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -250,8 +249,17 @@
                 break;
             if ([MIMEType caseInsensitiveCompare:mime] == NSOrderedSame)
             {
+                NSString *fileName = connection.originalRequest.URL.lastPathComponent;
+                if (fileName.pathExtension.length == 0)
+                {
+                    NSString *UTI = (__bridge NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef)MIMEType, NULL);
+                    NSString *extension = (__bridge NSString *)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)UTI, kUTTagClassFilenameExtension);
+                    
+                    fileName = [fileName stringByAppendingPathExtension:extension];
+                }
+                
                 ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
-                alertView.textField.text = connection.originalRequest.URL.lastPathComponent;
+                alertView.textField.text = fileName;
                 [alertView show];
                 
                 requestURL = connection.originalRequest.URL;
@@ -293,6 +301,11 @@
     [connection start]; 
 }
 
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [self webView:webView didFinishNavigation:navigation];
+}
+
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
     [self webView:webView didFinishNavigation:navigation];
@@ -319,16 +332,21 @@
     [self setUpToolbar:NO];
 }
 
+- (void)setBarsHidden:(BOOL)h
+{
+    [self.navigationController setNavigationBarHidden:h animated:YES];
+    [self.navigationController setToolbarHidden:h animated:YES];
+}
+
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     if ([scrollView.panGestureRecognizer translationInView:scrollView.superview].y > 0)
     {
-        [self.navigationController setNavigationBarHidden:NO animated:YES];
-        [self.navigationController setToolbarHidden:NO animated:YES];
-    } else
+        [self setBarsHidden:NO];
+    }
+    else if ([scrollView.panGestureRecognizer translationInView:scrollView.superview].y < 0)
     {
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-        [self.navigationController setToolbarHidden:YES animated:YES];
+        [self setBarsHidden:YES];
     }
 }
 

@@ -146,9 +146,9 @@
     double green3 = 255.0;
     double blue3 = 255.0;
     
-    double red4 = 255.0;
-    double green4 = 170.0;
-    double blue4 = 170.0;
+    double red4 = 210.0;
+    double green4 = 210.0;
+    double blue4 = 210.0;
     
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[UIColor colorWithRed:RGB(red1) green:RGB(green1) blue:RGB(blue1) alpha:1.0]] forKey:@"Color1"];
     
