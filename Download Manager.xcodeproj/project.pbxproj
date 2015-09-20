@@ -501,12 +501,12 @@
 		63F4FFD21AC35EDE0058874B /* iCloud */ = {
 			isa = PBXGroup;
 			children = (
-				AB38E9D51B94078B00F73C18 /* cloud_storage_filled-50@2x.png */,
 				AB38E9D61B94078B00F73C18 /* cloud_storage-50@2x.png */,
 				AB6D4A361BAD298A00C97E92 /* cloud_storage_filled-50@3x.png */,
 				AB6D4A371BAD298A00C97E92 /* cloud_storage-50@3x.png */,
 				AB6D4A981BAD316F00C97E92 /* cloud_storage_filled-50.png */,
 				AB6D4A991BAD316F00C97E92 /* cloud_storage-50.png */,
+				AB38E9D51B94078B00F73C18 /* cloud_storage_filled-50@2x.png */,
 				63F4FFD11AC35C340058874B /* Download Manager.entitlements */,
 				63F4FFD61AC35FE20058874B /* ACiCloudViewController.h */,
 				63F4FFD71AC35FE20058874B /* ACiCloudViewController.m */,
