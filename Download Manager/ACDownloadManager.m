@@ -8,8 +8,20 @@
 
 #import "ACDownloadManager.h"
 #import <CLFileNavigatorKit/CLFileNavigatorKit.h>
+#import "AppDelegate.h"
 
 @implementation ACDownloadManager
+{
+    UILabel *downloadLabel;
+    NSTimer *timeElapsedTimer;
+    NSTimeInterval elapsedTime;
+    CGFloat previousSize;
+}
+
+- (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 
 - (NSString *)iCloudPath
 {
@@ -34,8 +46,49 @@
         if ([alert isKindOfClass:[ACAlertView class]])
             self.alertView = alert;
     }
+    downloadLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80.0, 80.0)];
+    downloadLabel.center = CGPointMake(CGRectGetMidX(self.alertView.bounds), CGRectGetMidY(self.alertView.bounds));
+    downloadLabel.textAlignment = NSTextAlignmentCenter;
+    downloadLabel.numberOfLines = 0;
+    downloadLabel.font = [UIFont systemFontOfSize:9.0];
+    downloadLabel.textColor = [UIColor whiteColor];
+    [self.alertView addSubview:downloadLabel];
+    
+    if (![[[self appDelegate] allFeaturesUnlocked] boolValue])
+    {
+        NSInteger totalCount = [[CLFile fileWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] error:nil] directoryContents].count;
+        if (totalCount >= 3)
+        {
+            [self.alertView dismiss];
+            ACAlertView *alertView = [ACAlertView alertWithTitle:@"Unlock" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Cancel", @"Unlock"]];
+            alertView.textView.text = @"Maximum file limit reached. Select 'Unlock' to remove this limit.";
+            [alertView showWithSelectionHandler:^(ACAlertView *alert, NSString *buttonTitle)
+             {
+                 if ([buttonTitle isEqualToString:@"Unlock"])
+                 {
+                     [[self appDelegate] unlockFeatures];
+                     
+                     [alertView dismiss];
+                 }
+             }];
+            return;
+        }
+    }
+    previousSize = 0;
+    elapsedTime = 1;
+    timeElapsedTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(timerIncrement) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:timeElapsedTimer forMode:NSRunLoopCommonModes];
     self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:url] delegate:self];
     [self.connection start];
+}
+
+- (void)timerIncrement
+{
+    elapsedTime++;
+    CGFloat rate = (self.downloadedSize - previousSize);
+    NSString *labelString = [NSString stringWithFormat:@"%@/%@\n%@/s", [[NSFileManager defaultManager] formattedSizeStringForBytes:self.downloadedSize], [[NSFileManager defaultManager] formattedSizeStringForBytes:self.totalSize], [[NSFileManager defaultManager] formattedSizeStringForBytes:rate]];
+    downloadLabel.text = labelString;
+    previousSize = self.downloadedSize;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
@@ -54,6 +107,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+    [timeElapsedTimer invalidate];
     [self.alertView dismiss];
 
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -141,6 +195,7 @@
 {
     if ([title isEqualToString:@"Cancel"])
     {
+        [timeElapsedTimer invalidate];
         [self.connection cancel];
     }
 }

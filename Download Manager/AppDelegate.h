@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <StoreKit/StoreKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver>
 
 @property (strong, nonatomic) UIWindow *window;
 
-@end
+- (NSNumber *)allFeaturesUnlocked;
+- (void)unlockFeatures;
+- (void)restorePurchase;
 
+@end

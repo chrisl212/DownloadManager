@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <CLFileNavigatorKit/CLFileNavigatorKit.h>
 
-@interface ACSettingsTableViewController : UITableViewController <UITextFieldDelegate, ACAlertViewDelegate>
+@interface ACSettingsTableViewController : UITableViewController <ACAlertViewDelegate>
 
 @end

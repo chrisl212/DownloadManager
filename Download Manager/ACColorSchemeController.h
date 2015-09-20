@@ -9,22 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @interface ACColorSchemeController : UIViewController
+{
+    CGFloat red, green, blue;
+}
 
-@property (weak, nonatomic) IBOutlet UITextField *color1Red;
-@property (weak, nonatomic) IBOutlet UITextField *color1Green;
-@property (weak, nonatomic) IBOutlet UITextField *color1Blue;
-
-@property (weak, nonatomic) IBOutlet UITextField *color2Red;
-@property (weak, nonatomic) IBOutlet UITextField *color2Green;
-@property (weak, nonatomic) IBOutlet UITextField *color2Blue;
-
-@property (weak, nonatomic) IBOutlet UITextField *color3Red;
-@property (weak, nonatomic) IBOutlet UITextField *color3Green;
-@property (weak, nonatomic) IBOutlet UITextField *color3Blue;
-
-@property (weak, nonatomic) IBOutlet UITextField *color4Red;
-@property (weak, nonatomic) IBOutlet UITextField *color4Green;
-@property (weak, nonatomic) IBOutlet UITextField *color4Blue;
+@property (weak, nonatomic) UIView *selectedView;
+@property (weak, nonatomic) IBOutlet UISlider *redSlider;
+@property (weak, nonatomic) IBOutlet UISlider *greenSlider;
+@property (weak, nonatomic) IBOutlet UISlider *blueSlider;
 
 @property (weak, nonatomic) IBOutlet UIView *color1View;
 @property (weak, nonatomic) IBOutlet UIView *color2View;
@@ -33,5 +25,6 @@
 
 - (IBAction)save:(id)sender;
 - (IBAction)reset:(id)sender;
+- (IBAction)adjustColor:(id)sender;
 
 @end

@@ -8,16 +8,27 @@
 
 #import "ACiCloudViewController.h"
 #import "ACDownloadManager.h"
+#import "AppDelegate.h"
 
 @implementation ACiCloudViewController
 {
     NSIndexPath *selectedIndex;
 }
 
+- (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     self.navigationItem.title = @"iCloud";
+    if ([[[self appDelegate] allFeaturesUnlocked] boolValue])
+    {
+        self.tableView.tableHeaderView = self.searchController.searchBar;
+        self.tableView.tableFooterView = [self tableFooter];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -32,7 +43,7 @@
         return;
     selectedIndex = indexPath;
     ACAlertView *alertView = [[ACAlertView alloc] initWithTitle:@"Re-Download File" style:ACAlertViewStyleTextView delegate:self buttonTitles:@[@"No", @"Yes"]];
-    alertView.textView.text = @"Tapping 'Yes' will download this file to your downloads directory. \nNOTE: This will overwrite a file with the same name, should one exist.";
+    alertView.textView.text = @"Re-download this file to your downloads directory?";
     [alertView show];
 }
 

@@ -17,6 +17,23 @@
     UIBarButtonItem *progressViewBarButton;
     NSString *MIMEType;
     NSURL *requestURL;
+    BOOL downloadCheck;
+    ACViewSelectViewController *viewSelectViewController;
+}
+
+- (WKWebView *)createWebView
+{
+    WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+    config.mediaPlaybackRequiresUserAction = YES;
+    
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
+    webView.navigationDelegate = self;
+    webView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    webView.allowsBackForwardNavigationGestures = YES;
+    [webView addObserver:self forKeyPath:@"estimatedProgress" options:kNilOptions context:NULL];
+    webView.scrollView.delegate = self;
+    
+    return webView;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -46,6 +63,22 @@
                       }];
 }
 
+- (void)tapDetected:(UITapGestureRecognizer *)recog
+{
+    if (self.webView.isLoading)
+        return;
+    NSString *JSString = @"function isElementUploadAtPoint(x,y) { var tags = \"\";var e = document.elementFromPoint(x,y);while (e) {tags += e.tagName}return tags;}";
+    [self.webView evaluateJavaScript:JSString completionHandler:nil];
+
+    CGPoint pt = [recog locationInView:self.webView];
+    __block NSString *tags;
+    [self.webView evaluateJavaScript:[NSString stringWithFormat:@"isElementUploadAtPoint(%ld,%ld);",(long)pt.x,(long)pt.y] completionHandler:^(id obj, NSError *err)
+     {
+         tags = obj;
+         NSLog(@"%@", tags);
+     }];
+}
+
 - (void)saveAsAlert:(NSTimer *)sender
 {
     NSDictionary *userInfo = sender.userInfo;
@@ -73,6 +106,7 @@
     {
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:linkURLString]];
         [self.webView loadRequest:request];
+        downloadCheck = NO;
     }
     else if ([buttonTitle isEqualToString:@"Copy"])
         [[UIPasteboard generalPasteboard] setString:linkURLString];
@@ -102,10 +136,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    downloadCheck = YES;
+    
     self.edgesForExtendedLayout=UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars=NO;
     self.automaticallyAdjustsScrollViewInsets=NO;
+    self.navigationController.hidesBarsOnSwipe = YES;
 
     self.addressTextField = [[ACTextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 32)];
     self.addressTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"];
@@ -127,18 +163,23 @@
     
     //UIBarButtonItem *textFieldBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.addressTextField];
 
-    self.webView = [[WKWebView alloc] initWithFrame:CGRectZero];
-    self.webView.navigationDelegate = self;
-    self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    self.webView.allowsBackForwardNavigationGestures = YES;
-    [self.webView addObserver:self forKeyPath:@"estimatedProgress" options:kNilOptions context:NULL];
-    self.webView.scrollView.delegate = self;
+    WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+    config.mediaPlaybackRequiresUserAction = YES;
+    
+    self.webView = [self createWebView];
+    
+    self.webViews = @[_webView].mutableCopy;
     [self.view addSubview:_webView];
     
     UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
     longPressGestureRecognizer.minimumPressDuration = 0.5;
     longPressGestureRecognizer.delegate = self;
     [self.webView addGestureRecognizer:longPressGestureRecognizer];
+    
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
+    tapGestureRecognizer.numberOfTapsRequired = 1;
+    tapGestureRecognizer.delegate = self;
+    //TODO: [self.webView addGestureRecognizer:tapGestureRecognizer];
     
     NSURL *URL = [NSURL URLWithString:_addressTextField.text];
     NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
@@ -167,10 +208,74 @@
     UIBarButtonItem *flex1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *flex2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *flex3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *flex4 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *download = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download.png"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadAddressBar)];
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self.webView action:@selector(stopLoading)];
+    UIBarButtonItem *tabs = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tabs.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showTabs)];
     
-    self.toolbarItems = @[back, flex1, (isLoading) ? stop : download, flex2, (isLoading) ? progressViewBarButton : refreshBarButton, flex3, forward];
+    self.toolbarItems = @[back, flex1, (isLoading) ? stop : download, flex2, (isLoading) ? progressViewBarButton : refreshBarButton, flex4, tabs, flex3, forward];
+}
+
+- (void)showTabs
+{
+    self.navigationController.hidesBarsOnSwipe = NO;
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self.navigationController setToolbarHidden:YES animated:YES];
+    viewSelectViewController = [[ACViewSelectViewController alloc] initWithViews:self.webViews delegate:self];
+    [self.webView removeFromSuperview];
+    [self addChildViewController:viewSelectViewController];
+    [self.view addSubview:viewSelectViewController.view];
+    [viewSelectViewController setSelectedIndex:[self.webViews indexOfObject:self.webView] animated:NO];
+}
+
+- (void)viewSelectControllerShouldCreateNewView:(ACViewSelectViewController *)controller
+{
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController setToolbarHidden:NO animated:YES];
+    WKWebView *webView = [self createWebView];
+    [self.webViews addObject:webView];
+    self.navigationController.hidesBarsOnSwipe = YES;
+    [viewSelectViewController removeFromParentViewController];
+    [viewSelectViewController.view removeFromSuperview];
+    self.webView = webView;
+    self.webView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height);// - toolbar.frame.size.height);
+    self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0));// + toolbar.frame.size.height/2.0);
+    self.webView.userInteractionEnabled = YES;
+    [self.view addSubview:self.webView];
+    
+    self.addressTextField.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"];
+    NSURL *URL = [NSURL URLWithString:_addressTextField.text];
+    NSURLRequest *URLRequest = [NSURLRequest requestWithURL:URL];
+    [self.webView loadRequest:URLRequest];
+}
+
+- (void)viewSelectController:(ACViewSelectViewController *)controller didSelectViewAtIndex:(NSInteger)index
+{
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController setToolbarHidden:NO animated:YES];
+    self.navigationController.hidesBarsOnSwipe = YES;
+    [viewSelectViewController removeFromParentViewController];
+    [viewSelectViewController.view removeFromSuperview];
+    self.webView = self.webViews[index];
+    self.webView.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height);// - toolbar.frame.size.height);
+    self.webView.center = CGPointMake(self.view.bounds.size.width/2.0, (self.view.bounds.size.height/2.0));// + toolbar.frame.size.height/2.0);
+    self.webView.userInteractionEnabled = YES;
+    [self.view addSubview:self.webView];
+    self.addressTextField.text = self.webView.title;
+}
+
+- (void)viewSelectController:(ACViewSelectViewController *)controller didDeleteViewAtIndex:(NSInteger)index
+{
+    WKWebView *webView = self.webViews[index];
+    [webView removeObserver:self forKeyPath:@"estimatedProgress"];
+    [self.webViews removeObjectAtIndex:index];
+    
+    if (index == 0)
+        index = 1;
+    if (self.webViews.count == 0)
+        [self.webViews addObject:[self createWebView]];
+    controller.views = self.webViews;
+    [controller setSelectedIndex:index-1 animated:YES];
 }
 
 - (void)searchEngineChanged
@@ -231,74 +336,72 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Connection delegate
+#pragma mark - Web View Delegate
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
 {
-    [connection cancel];
-    if (response.statusCode == 200)
+    if (!downloadCheck)
     {
-        MIMEType = [response MIMEType];
-        
-        NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
-        NSArray *typesArray = [NSArray arrayWithContentsOfFile:mimeTypesPath];
-        for (NSString *mime in typesArray)
+        downloadCheck = YES;
+        decisionHandler(WKNavigationResponsePolicyAllow);
+        return;
+    }
+    NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
+    
+    NSArray *typesArray = [NSArray arrayWithContentsOfFile:dlTypesPath];
+    
+    NSString *requestFileType = [[navigationResponse.response.URL.absoluteString componentsSeparatedByString:@"?"][0] pathExtension];
+    for (NSString *type in typesArray)
+    {
+        if ([type caseInsensitiveCompare:requestFileType] == NSOrderedSame)
         {
-            if (!MIMEType)
-                break;
-            if ([MIMEType caseInsensitiveCompare:mime] == NSOrderedSame)
-            {
-                NSString *fileName = connection.originalRequest.URL.lastPathComponent;
-                if (fileName.pathExtension.length == 0)
-                {
-                    NSString *UTI = (__bridge NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef)MIMEType, NULL);
-                    NSString *extension = (__bridge NSString *)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)UTI, kUTTagClassFilenameExtension);
-                    
-                    fileName = [fileName stringByAppendingPathExtension:extension];
-                }
-                
-                ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
-                alertView.textField.text = fileName;
-                [alertView show];
-                
-                requestURL = connection.originalRequest.URL;
-            }
+            ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+            alertView.textField.text = navigationResponse.response.URL.lastPathComponent;
+            [alertView show];
+            
+            requestURL = navigationResponse.response.URL;
+            decisionHandler(WKNavigationResponsePolicyCancel);
+            return;
         }
     }
-}
+    
+    MIMEType = [navigationResponse.response MIMEType];
+    
+    NSString *mimeTypesPath = [cacheDir stringByAppendingPathComponent:@"MimeTypes.plist"];
+    typesArray = [NSArray arrayWithContentsOfFile:mimeTypesPath];
+    for (NSString *mime in typesArray)
+    {
+        if (!MIMEType)
+            break;
+        if ([MIMEType caseInsensitiveCompare:mime] == NSOrderedSame)
+        {
+            NSString *fileName = navigationResponse.response.URL.lastPathComponent;
 
-#pragma mark - Web View Delegate
+            NSString *UTI = (__bridge NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef)MIMEType, NULL);
+            NSString *extension = (__bridge NSString *)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)UTI, kUTTagClassFilenameExtension);
+            
+            if (extension)
+                fileName = [fileName stringByAppendingPathExtension:extension];
+            
+            ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+            alertView.textField.text = fileName;
+            [alertView show];
+            
+            requestURL = navigationResponse.response.URL;
+            decisionHandler(WKNavigationResponsePolicyCancel);
+
+            return;
+        }
+    }
+    decisionHandler(WKNavigationResponsePolicyAllow);
+}
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
 {
     self.addressTextField.textAlignment = NSTextAlignmentLeft;
     self.addressTextField.text = webView.URL.absoluteString;
     [self setUpToolbar:YES];
-    
-    NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *dlTypesPath = [cacheDir stringByAppendingPathComponent:@"DownloadTypes.plist"];
-    
-    NSArray *typesArray = [NSArray arrayWithContentsOfFile:dlTypesPath];
-    
-    NSString *requestFileType = [[webView.URL.absoluteString componentsSeparatedByString:@"?"][0] pathExtension];
-    for (NSString *type in typesArray)
-    {
-        if ([type caseInsensitiveCompare:requestFileType] == NSOrderedSame)
-        {
-            ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
-            alertView.textField.text = webView.URL.lastPathComponent;
-            [alertView show];
-            
-            requestURL = webView.URL;
-            
-            return;
-        }
-    }
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:webView.URL];
-    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
-    [connection start]; 
 }
 
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
@@ -330,24 +433,6 @@
                            }
                        }];
     [self setUpToolbar:NO];
-}
-
-- (void)setBarsHidden:(BOOL)h
-{
-    [self.navigationController setNavigationBarHidden:h animated:YES];
-    [self.navigationController setToolbarHidden:h animated:YES];
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    if ([scrollView.panGestureRecognizer translationInView:scrollView.superview].y > 0)
-    {
-        [self setBarsHidden:NO];
-    }
-    else if ([scrollView.panGestureRecognizer translationInView:scrollView.superview].y < 0)
-    {
-        [self setBarsHidden:YES];
-    }
 }
 
 #pragma mark - Alert View Delegate

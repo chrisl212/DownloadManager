@@ -7,6 +7,7 @@
 //
 
 #import "ACSettingsTableViewController.h"
+#import "AppDelegate.h"
 
 NSString *const ACSettingsViewControllerKey = @"vc";
 NSString *const ACSettingsSwitchKey = @"switch";
@@ -20,33 +21,46 @@ NSString *const ACSettingsButtonKey = @"button";
     NSArray *settings;
 }
 
+- (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     NSDictionary *fileSettings =
   @{@"name" : @"Files", @"items" : @[
-            @{@"name" : @"Downloadable Types", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACDownloadTypesController"},
-            @{@"name" : @"Add to iCloud", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleiCloudSettings:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"iCloud"])},
-            @{@"name" : @"Dates", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeDateDisplay:", @"values" : @[@"Creation", @"Modification"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"date"]},
-            @{@"name" : @"Thumbnails", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleThumbnails:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"thumbnails"])},
-            @{@"name" : @"Clear Cache", @"type" : ACSettingsButtonKey, @"selector" : @"clearCache"}
+            @{@"name" : @"Downloadable Types", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACDownloadTypesController", @"requiresPurchase" : @(YES)},
+            @{@"name" : @"Add to iCloud", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleiCloudSettings:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"iCloud"]), @"requiresPurchase" : @(NO)},
+            @{@"name" : @"Thumbnails", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleThumbnails:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"thumbnails"]), @"requiresPurchase" : @(YES)},
+            @{@"name" : @"Dates", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeDateDisplay:", @"values" : @[@"Creation", @"Modification"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"date"], @"requiresPurchase" : @(YES)},
+            @{@"name" : @"Clear Cache", @"type" : ACSettingsButtonKey, @"selector" : @"clearCache", @"requiresPurchase" : @(NO)}
             ]};
     
     NSDictionary *appearanceSettings =
   @{@"name" : @"Appearance", @"items" : @[
-            @{@"name" : @"Color Scheme", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACColorSchemeController"},
-            @{@"name" : @"Homepage", @"type" : ACSettingsTextFieldKey, @"selector" : @"changeHomepage:", @"value" : [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"], @"keyboard" : @(UIKeyboardTypeURL)},
-            @{@"name" : @"Search Engine", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeSearchEngine:", @"values" : @[@"Google", @"Yahoo", @"Bing"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"]}
+            @{@"name" : @"Color Scheme", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACColorSchemeController", @"requiresPurchase" : @(YES)},
+            @{@"name" : @"Homepage", @"type" : ACSettingsTextFieldKey, @"selector" : @"changeHomepage:", @"value" : [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"], @"keyboard" : @(UIKeyboardTypeURL), @"requiresPurchase" : @(YES)},
+            @{@"name" : @"Search Engine", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeSearchEngine:", @"values" : @[@"Google", @"Yahoo", @"Bing"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"], @"requiresPurchase" : @(YES)}
             ]};
     
     NSDictionary *supportSettings =
   @{@"name" : @"Support", @"items" : @[
-            @{@"name" : @"Contact", @"type" : ACSettingsWebViewKey, @"url" : @"http://a-cstudios.com/mydl/support.html"}
+            @{@"name" : @"Contact", @"type" : ACSettingsWebViewKey, @"url" : @"http://a-cstudios.com/mydl/support.html", @"requiresPurchase" : @(NO)},
+            @{@"name" : @"Unlock all features", @"type" : ACSettingsButtonKey, @"selector" : @"unlockFeatures", @"requiresPurchase" : @(NO)}
+            /*@{@"name" : @"Restore purchase", @"type" : ACSettingsButtonKey, @"selector" : @"restorePurchase", @"requiresPurchase" : @(NO)}*/
             //@{@"name" : @"Source Code", @"type" : ACSettingsWebViewKey, @"url" : @"https://github.com/chrisl212/DownloadManager"}
             ]};
     
     settings = @[fileSettings, appearanceSettings, supportSettings];
     self.navigationItem.title = @"Settings";
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -132,7 +146,7 @@ NSString *const ACSettingsButtonKey = @"button";
             if ([[segment titleForSegmentAtIndex:i] isEqualToString:selectedValue])
                 [segment setSelectedSegmentIndex:i];
     }
-    else if ([cellType isEqualToString:ACSettingsViewControllerKey])
+    else if ([cellType isEqualToString:ACSettingsViewControllerKey] || [cellType isEqualToString:ACSettingsWebViewKey])
     {
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         cell.accessoryView = nil;
@@ -143,6 +157,32 @@ NSString *const ACSettingsButtonKey = @"button";
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         cell.accessoryView = nil;
         cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    BOOL requiresPurchase = [cellDictionary[@"requiresPurchase"] boolValue];
+    if (![[[self appDelegate] allFeaturesUnlocked] boolValue])
+    {
+        if (requiresPurchase)
+        {
+            if (cell.accessoryView && [cell.accessoryView isKindOfClass:[UIControl class]])
+                [(UIControl *)cell.accessoryView setEnabled:NO];
+            cell.textLabel.enabled = NO;
+            cell.userInteractionEnabled = NO;
+        }
+        else
+        {
+            if (cell.accessoryView && [cell.accessoryView isKindOfClass:[UIControl class]])
+                [(UIControl *)cell.accessoryView setEnabled:YES];
+            cell.textLabel.enabled = YES;
+            cell.userInteractionEnabled = YES;
+        }
+    }
+    else
+    {
+        if (cell.accessoryView && [cell.accessoryView isKindOfClass:[UIControl class]])
+            [(UIControl *)cell.accessoryView setEnabled:YES];
+        cell.textLabel.enabled = YES;
+        cell.userInteractionEnabled = YES;
     }
     
     return cell;
@@ -216,6 +256,16 @@ NSString *const ACSettingsButtonKey = @"button";
 }
 
 #pragma mark - Cell Actions
+
+- (void)restorePurchase
+{
+    [[self appDelegate] restorePurchase];
+}
+
+- (void)unlockFeatures
+{
+    [[self appDelegate] unlockFeatures];
+}
 
 - (void)clearCache
 {
