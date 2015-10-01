@@ -33,6 +33,11 @@
     [webView addObserver:self forKeyPath:@"estimatedProgress" options:kNilOptions context:NULL];
     webView.scrollView.delegate = self;
     
+    UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
+    longPressGestureRecognizer.minimumPressDuration = 0.5;
+    longPressGestureRecognizer.delegate = self;
+    [webView addGestureRecognizer:longPressGestureRecognizer];
+    
     return webView;
 }
 
@@ -170,12 +175,7 @@
     
     self.webViews = @[_webView].mutableCopy;
     [self.view addSubview:_webView];
-    
-    UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
-    longPressGestureRecognizer.minimumPressDuration = 0.5;
-    longPressGestureRecognizer.delegate = self;
-    [self.webView addGestureRecognizer:longPressGestureRecognizer];
-    
+
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
     tapGestureRecognizer.numberOfTapsRequired = 1;
     tapGestureRecognizer.delegate = self;
@@ -223,6 +223,9 @@
     [self.navigationController setToolbarHidden:YES animated:YES];
     viewSelectViewController = [[ACViewSelectViewController alloc] initWithViews:self.webViews delegate:self];
     [self.webView removeFromSuperview];
+    for (UIGestureRecognizer *recog in self.webView.gestureRecognizers)
+        if ([recog isKindOfClass:[UILongPressGestureRecognizer class]])
+            [self.webView removeGestureRecognizer:recog];
     [self addChildViewController:viewSelectViewController];
     [self.view addSubview:viewSelectViewController.view];
     [viewSelectViewController setSelectedIndex:[self.webViews indexOfObject:self.webView] animated:NO];
@@ -262,6 +265,11 @@
     self.webView.userInteractionEnabled = YES;
     [self.view addSubview:self.webView];
     self.addressTextField.text = self.webView.title;
+    
+    UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
+    longPressGestureRecognizer.minimumPressDuration = 0.5;
+    longPressGestureRecognizer.delegate = self;
+    [self.webView addGestureRecognizer:longPressGestureRecognizer];
 }
 
 - (void)viewSelectController:(ACViewSelectViewController *)controller didDeleteViewAtIndex:(NSInteger)index

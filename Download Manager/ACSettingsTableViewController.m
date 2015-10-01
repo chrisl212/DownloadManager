@@ -26,40 +26,46 @@ NSString *const ACSettingsButtonKey = @"button";
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
+- (void)populateSettings
+{
+    NSDictionary *fileSettings =
+    @{@"name" : @"Files", @"items" : @[
+              @{@"name" : @"Downloadable Types", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACDownloadTypesController", @"requiresPurchase" : @(YES)},
+              @{@"name" : @"Add to iCloud", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleiCloudSettings:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"iCloud"]), @"requiresPurchase" : @(NO)},
+              @{@"name" : @"Thumbnails", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleThumbnails:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"thumbnails"]), @"requiresPurchase" : @(YES)},
+              @{@"name" : @"Dates", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeDateDisplay:", @"values" : @[@"Creation", @"Modification"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"date"], @"requiresPurchase" : @(YES)},
+              @{@"name" : @"Clear Cache", @"type" : ACSettingsButtonKey, @"selector" : @"clearCache", @"requiresPurchase" : @(NO)}
+              ]};
+    
+    NSDictionary *appearanceSettings =
+    @{@"name" : @"Appearance", @"items" : @[
+              @{@"name" : @"Color Scheme", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACColorSchemeController", @"requiresPurchase" : @(YES)},
+              @{@"name" : @"Homepage", @"type" : ACSettingsTextFieldKey, @"selector" : @"changeHomepage:", @"value" : [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"], @"keyboard" : @(UIKeyboardTypeURL), @"requiresPurchase" : @(YES)},
+              @{@"name" : @"Search Engine", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeSearchEngine:", @"values" : @[@"Google", @"Yahoo", @"Bing"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"], @"requiresPurchase" : @(YES)}
+              ]};
+    
+    NSDictionary *supportSettings =
+    @{@"name" : @"Support", @"items" : @[
+              @{@"name" : @"Contact", @"type" : ACSettingsWebViewKey, @"url" : @"http://a-cstudios.com/mydl/support.html", @"requiresPurchase" : @(NO)},
+              @{@"name" : @"Unlock all features", @"type" : ACSettingsButtonKey, @"selector" : @"unlockFeatures", @"requiresPurchase" : @(NO)}
+              /*@{@"name" : @"Restore purchase", @"type" : ACSettingsButtonKey, @"selector" : @"restorePurchase", @"requiresPurchase" : @(NO)}*/
+              //@{@"name" : @"Source Code", @"type" : ACSettingsWebViewKey, @"url" : @"https://github.com/chrisl212/DownloadManager"}
+              ]};
+    
+    settings = @[fileSettings, appearanceSettings, supportSettings];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSDictionary *fileSettings =
-  @{@"name" : @"Files", @"items" : @[
-            @{@"name" : @"Downloadable Types", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACDownloadTypesController", @"requiresPurchase" : @(YES)},
-            @{@"name" : @"Add to iCloud", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleiCloudSettings:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"iCloud"]), @"requiresPurchase" : @(NO)},
-            @{@"name" : @"Thumbnails", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleThumbnails:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"thumbnails"]), @"requiresPurchase" : @(YES)},
-            @{@"name" : @"Dates", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeDateDisplay:", @"values" : @[@"Creation", @"Modification"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"date"], @"requiresPurchase" : @(YES)},
-            @{@"name" : @"Clear Cache", @"type" : ACSettingsButtonKey, @"selector" : @"clearCache", @"requiresPurchase" : @(NO)}
-            ]};
-    
-    NSDictionary *appearanceSettings =
-  @{@"name" : @"Appearance", @"items" : @[
-            @{@"name" : @"Color Scheme", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACColorSchemeController", @"requiresPurchase" : @(YES)},
-            @{@"name" : @"Homepage", @"type" : ACSettingsTextFieldKey, @"selector" : @"changeHomepage:", @"value" : [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"], @"keyboard" : @(UIKeyboardTypeURL), @"requiresPurchase" : @(YES)},
-            @{@"name" : @"Search Engine", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeSearchEngine:", @"values" : @[@"Google", @"Yahoo", @"Bing"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"], @"requiresPurchase" : @(YES)}
-            ]};
-    
-    NSDictionary *supportSettings =
-  @{@"name" : @"Support", @"items" : @[
-            @{@"name" : @"Contact", @"type" : ACSettingsWebViewKey, @"url" : @"http://a-cstudios.com/mydl/support.html", @"requiresPurchase" : @(NO)},
-            @{@"name" : @"Unlock all features", @"type" : ACSettingsButtonKey, @"selector" : @"unlockFeatures", @"requiresPurchase" : @(NO)}
-            /*@{@"name" : @"Restore purchase", @"type" : ACSettingsButtonKey, @"selector" : @"restorePurchase", @"requiresPurchase" : @(NO)}*/
-            //@{@"name" : @"Source Code", @"type" : ACSettingsWebViewKey, @"url" : @"https://github.com/chrisl212/DownloadManager"}
-            ]};
-    
-    settings = @[fileSettings, appearanceSettings, supportSettings];
     self.navigationItem.title = @"Settings";
+    [self populateSettings];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self populateSettings];
     [self.tableView reloadData];
 }
 
