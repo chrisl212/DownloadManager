@@ -30,24 +30,24 @@ NSString *const ACSettingsButtonKey = @"button";
 {
     NSDictionary *fileSettings =
     @{@"name" : @"Files", @"items" : @[
-              @{@"name" : @"Downloadable Types", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACDownloadTypesController", @"requiresPurchase" : @(YES)},
-              @{@"name" : @"Add to iCloud", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleiCloudSettings:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"iCloud"]), @"requiresPurchase" : @(NO)},
-              @{@"name" : @"Thumbnails", @"type" : ACSettingsSwitchKey, @"selector" : @"toggleThumbnails:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"thumbnails"]), @"requiresPurchase" : @(YES)},
-              @{@"name" : @"Dates", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeDateDisplay:", @"values" : @[@"Creation", @"Modification"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"date"], @"requiresPurchase" : @(YES)},
-              @{@"name" : @"Clear Cache", @"type" : ACSettingsButtonKey, @"selector" : @"clearCache", @"requiresPurchase" : @(NO)}
+              @{@"name" : NSLocalizedString(@"DownloadableTypes", NULL), @"type" : ACSettingsViewControllerKey, @"controller" : @"ACDownloadTypesController", @"requiresPurchase" : @(YES)},
+              @{@"name" : NSLocalizedString(@"AddToCloud", NULL), @"type" : ACSettingsSwitchKey, @"selector" : @"toggleiCloudSettings:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"iCloud"]), @"requiresPurchase" : @(NO)},
+              @{@"name" : NSLocalizedString(@"Thumbnails", NULL), @"type" : ACSettingsSwitchKey, @"selector" : @"toggleThumbnails:", @"state" : @([[NSUserDefaults standardUserDefaults] boolForKey:@"thumbnails"]), @"requiresPurchase" : @(YES)},
+              @{@"name" : NSLocalizedString(@"Dates", NULL), @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeDateDisplay:", @"values" : @[@"Creation", @"Modification"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"date"], @"requiresPurchase" : @(YES)},
+              @{@"name" : NSLocalizedString(@"ClearCache", NULL), @"type" : ACSettingsButtonKey, @"selector" : @"clearCache", @"requiresPurchase" : @(NO)}
               ]};
     
     NSDictionary *appearanceSettings =
     @{@"name" : @"Appearance", @"items" : @[
-              @{@"name" : @"Color Scheme", @"type" : ACSettingsViewControllerKey, @"controller" : @"ACColorSchemeController", @"requiresPurchase" : @(YES)},
-              @{@"name" : @"Homepage", @"type" : ACSettingsTextFieldKey, @"selector" : @"changeHomepage:", @"value" : [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"], @"keyboard" : @(UIKeyboardTypeURL), @"requiresPurchase" : @(YES)},
-              @{@"name" : @"Search Engine", @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeSearchEngine:", @"values" : @[@"Google", @"Yahoo", @"Bing"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"], @"requiresPurchase" : @(YES)}
+              @{@"name" : NSLocalizedString(@"ColorScheme", NULL), @"type" : ACSettingsViewControllerKey, @"controller" : @"ACColorSchemeController", @"requiresPurchase" : @(YES)},
+              @{@"name" : NSLocalizedString(@"Homepage", NULL), @"type" : ACSettingsTextFieldKey, @"selector" : @"changeHomepage:", @"value" : [[NSUserDefaults standardUserDefaults] objectForKey:@"homepage"], @"keyboard" : @(UIKeyboardTypeURL), @"requiresPurchase" : @(YES)},
+              @{@"name" : NSLocalizedString(@"SearchEngine", NULL), @"type" : ACSettingsSegmentedControlKey, @"selector" : @"changeSearchEngine:", @"values" : @[@"Google", @"Yahoo", @"Bing"], @"selectedValue" : [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"], @"requiresPurchase" : @(YES)}
               ]};
     
     NSDictionary *supportSettings =
     @{@"name" : @"Support", @"items" : @[
-              @{@"name" : @"Contact", @"type" : ACSettingsWebViewKey, @"url" : @"http://a-cstudios.com/mydl/support.html", @"requiresPurchase" : @(NO)},
-              @{@"name" : @"Unlock all features", @"type" : ACSettingsButtonKey, @"selector" : @"unlockFeatures", @"requiresPurchase" : @(NO)}
+              @{@"name" : NSLocalizedString(@"Contact", NULL), @"type" : ACSettingsWebViewKey, @"url" : @"http://a-cstudios.com/mydl/support.html", @"requiresPurchase" : @(NO)},
+              @{@"name" : NSLocalizedString(@"UnlockFeatures", NULL), @"type" : ACSettingsButtonKey, @"selector" : @"unlockFeatures", @"requiresPurchase" : @(NO)}
               /*@{@"name" : @"Restore purchase", @"type" : ACSettingsButtonKey, @"selector" : @"restorePurchase", @"requiresPurchase" : @(NO)}*/
               //@{@"name" : @"Source Code", @"type" : ACSettingsWebViewKey, @"url" : @"https://github.com/chrisl212/DownloadManager"}
               ]};
@@ -58,7 +58,7 @@ NSString *const ACSettingsButtonKey = @"button";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.title = @"Settings";
+    self.navigationItem.title = NSLocalizedString(@"Settings", NULL);
     [self populateSettings];
 }
 
@@ -201,7 +201,7 @@ NSString *const ACSettingsButtonKey = @"button";
     NSDictionary *cellDictionary = settings[indexPath.section][@"items"][indexPath.row];
     NSString *cellType = cellDictionary[@"type"];
     
-    id vc = nil;
+    UIViewController *vc = nil;
     
     if ([cellType isEqualToString:ACSettingsTextFieldKey] || [cellType isEqualToString:ACSettingsSegmentedControlKey] || [cellType isEqualToString:ACSettingsSwitchKey])
         return;
@@ -214,7 +214,8 @@ NSString *const ACSettingsButtonKey = @"button";
     else if ([cellType isEqualToString:ACSettingsWebViewKey])
     {
         UIViewController *webViewController = [[UIViewController alloc] init];
-        UIWebView *webView = [[UIWebView alloc] initWithFrame:webViewController.view.bounds];
+        UIWebView *webView = [[UIWebView alloc] initWithFrame:webViewController.view.frame];
+        webViewController.automaticallyAdjustsScrollViewInsets = YES;
         [webViewController.view addSubview:webView];
         NSURL *URL = [NSURL URLWithString:cellDictionary[@"url"]];
         [webView loadRequest:[NSURLRequest requestWithURL:URL]];
@@ -286,7 +287,7 @@ NSString *const ACSettingsButtonKey = @"button";
 
 - (void)changeDateDisplay:(UISegmentedControl *)sender
 {
-    NSArray *items = @[@"Creation", @"Modification"];
+    NSArray *items = @[NSLocalizedString(@"Creation", NULL), NSLocalizedString(@"Modification", NULL)];
     [[NSUserDefaults standardUserDefaults] setObject:items[[sender selectedSegmentIndex]] forKey:@"date"];
 }
 

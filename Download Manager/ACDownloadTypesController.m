@@ -48,7 +48,7 @@
 {
     [super viewWillAppear:animated];
     [self.tableView reloadData];
-    self.navigationItem.title = @"Downloadable Types";
+    self.navigationItem.title = NSLocalizedString(@"DownloadableTypes", NULL);
 }
 
 - (void)viewDidLoad

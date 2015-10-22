@@ -42,8 +42,8 @@
     if (tableView.isEditing)
         return;
     selectedIndex = indexPath;
-    ACAlertView *alertView = [[ACAlertView alloc] initWithTitle:@"Re-Download File" style:ACAlertViewStyleTextView delegate:self buttonTitles:@[@"No", @"Yes"]];
-    alertView.textView.text = @"Re-download this file to your downloads directory?";
+    ACAlertView *alertView = [[ACAlertView alloc] initWithTitle:NSLocalizedString(@"Redownload", NULL) style:ACAlertViewStyleTextView delegate:self buttonTitles:@[NSLocalizedString(@"No", NULL), NSLocalizedString(@"Yes", NULL)]];
+    alertView.textView.text = NSLocalizedString(@"RedownloadBody", NULL);
     [alertView show];
 }
 
@@ -52,9 +52,9 @@
     [alertView dismiss];
     [self.tableView deselectRowAtIndexPath:selectedIndex animated:YES];
 
-    if ([title isEqualToString:@"No"])
+    if ([title isEqualToString:NSLocalizedString(@"No", NULL)])
         return;
-    else if (![title isEqualToString:@"Yes"])
+    else if (![title isEqualToString:NSLocalizedString(@"Yes", NULL)])
     {
         [super alertView:alertView didClickButtonWithTitle:title];
         return;
@@ -67,7 +67,7 @@
     if (error)
     {
         dispatch_async(dispatch_get_main_queue(), ^{
-            ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
+            ACAlertView *errorAlert = [ACAlertView alertWithTitle:NSLocalizedString(@"Error", NULL) style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[NSLocalizedString(@"Close", NULL)]];
             errorAlert.textView.text = error.localizedDescription;
             [errorAlert show];
         });
@@ -79,7 +79,7 @@
     
     ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
     NSString *alertTitle = [fileContents componentsSeparatedByString:@"\n"][0];
-    ACAlertView *downloadAlertView = [ACAlertView alertWithTitle:alertTitle style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[@"Cancel", @"Hide"]];
+    ACAlertView *downloadAlertView = [ACAlertView alertWithTitle:alertTitle style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[NSLocalizedString(@"Cancel", NULL), NSLocalizedString(@"Hide", NULL)]];
     downloadAlertView.progressView.backgroundColor = [UIColor clearColor];
     [downloadAlertView show];
     [downloadManager downloadFileAtURL:[NSURL URLWithString:fileURLString]];

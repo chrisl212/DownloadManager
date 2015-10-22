@@ -62,7 +62,7 @@
                           if (tags.length > 0)
                           {
                               NSString *linkURLString = [tags componentsSeparatedByString:@","][0];
-                              UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:linkURLString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Download" otherButtonTitles:@"Open", @"Copy", nil];
+                              UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:linkURLString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", NULL) destructiveButtonTitle:NSLocalizedString(@"Download", NULL) otherButtonTitles:NSLocalizedString(@"Open", NULL), NSLocalizedString(@"Copy", NULL), nil];
                               [actionSheet showInView:self.webView];
                           }
                       }];
@@ -88,7 +88,7 @@
 {
     NSDictionary *userInfo = sender.userInfo;
     
-    ACAlertView *actionSheetAlertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+    ACAlertView *actionSheetAlertView = [ACAlertView alertWithTitle:NSLocalizedString(@"SaveAs", NULL) style:ACAlertViewStyleTextField delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", NULL), NSLocalizedString(@"Download", NULL)]];
     actionSheetAlertView.textField.text = [userInfo[@"link"] lastPathComponent];
     [actionSheetAlertView show];
     
@@ -100,20 +100,20 @@
     NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
     NSString *linkURLString = actionSheet.title;
     
-    if ([buttonTitle isEqualToString:@"Cancel"])
+    if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel", NULL)])
         return;
-    else if ([buttonTitle isEqualToString:@"Download"])
+    else if ([buttonTitle isEqualToString:NSLocalizedString(@"Download", NULL)])
     {
         NSTimer *alertTimer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(saveAsAlert:) userInfo:@{@"link" : linkURLString} repeats:NO];
         [[NSRunLoop currentRunLoop] addTimer:alertTimer forMode:NSRunLoopCommonModes];
     }
-    else if ([buttonTitle isEqualToString:@"Open"])
+    else if ([buttonTitle isEqualToString:NSLocalizedString(@"Open", NULL)])
     {
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:linkURLString]];
         [self.webView loadRequest:request];
         downloadCheck = NO;
     }
-    else if ([buttonTitle isEqualToString:@"Copy"])
+    else if ([buttonTitle isEqualToString:NSLocalizedString(@"Copy", NULL)])
         [[UIPasteboard generalPasteboard] setString:linkURLString];
 }
 
@@ -121,7 +121,7 @@
 {
     NSURL *URL = self.webView.URL;
     
-    ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+    ACAlertView *alertView = [ACAlertView alertWithTitle:NSLocalizedString(@"SaveAs", NULL) style:ACAlertViewStyleTextField delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", NULL), NSLocalizedString(@"Download", NULL)]];
     alertView.textField.text = URL.lastPathComponent;
     [alertView show];
     
@@ -154,7 +154,7 @@
     self.addressTextField.keyboardType = UIKeyboardTypeWebSearch;
     
     NSString *searchEngine = [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"];
-    self.addressTextField.placeholder = [NSString stringWithFormat:@"Enter address or search %@", searchEngine];
+    self.addressTextField.placeholder = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"EnterAddressSearch", NULL), searchEngine];
     
     self.addressTextField.borderStyle = UITextBorderStyleRoundedRect;
     self.addressTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -213,7 +213,7 @@
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self.webView action:@selector(stopLoading)];
     UIBarButtonItem *tabs = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tabs.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showTabs)];
     
-    self.toolbarItems = @[back, flex1, (isLoading) ? stop : download, flex2, (isLoading) ? progressViewBarButton : refreshBarButton, flex4, tabs, flex3, forward];
+    self.toolbarItems = @[back, flex3, forward, flex1, (isLoading) ? stop : download, flex2, (isLoading) ? progressViewBarButton : refreshBarButton, flex4, tabs];
 }
 
 - (void)showTabs
@@ -289,7 +289,7 @@
 - (void)searchEngineChanged
 {
     NSString *searchEngine = [[NSUserDefaults standardUserDefaults] objectForKey:@"search engine"];
-    self.addressTextField.placeholder = [NSString stringWithFormat:@"Enter address or search %@", searchEngine];
+    self.addressTextField.placeholder = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"EnterAddressSearch", NULL), searchEngine];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -364,7 +364,7 @@
     {
         if ([type caseInsensitiveCompare:requestFileType] == NSOrderedSame)
         {
-            ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+            ACAlertView *alertView = [ACAlertView alertWithTitle:NSLocalizedString(@"SaveAs", NULL) style:ACAlertViewStyleTextField delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", NULL), NSLocalizedString(@"Download", NULL)]];
             alertView.textField.text = navigationResponse.response.URL.lastPathComponent;
             [alertView show];
             
@@ -392,7 +392,7 @@
             if (extension)
                 fileName = [fileName stringByAppendingPathExtension:extension];
             
-            ACAlertView *alertView = [ACAlertView alertWithTitle:@"Save as..." style:ACAlertViewStyleTextField delegate:self buttonTitles:@[@"Cancel", @"Download"]];
+            ACAlertView *alertView = [ACAlertView alertWithTitle:NSLocalizedString(@"SaveAs", NULL) style:ACAlertViewStyleTextField delegate:self buttonTitles:@[NSLocalizedString(@"Cancel", NULL), NSLocalizedString(@"Download", NULL)]];
             alertView.textField.text = fileName;
             [alertView show];
             
@@ -447,13 +447,13 @@
 
 - (void)alertView:(ACAlertView *)alertView didClickButtonWithTitle:(NSString *)title
 {
-    if ([title isEqualToString:@"Download"])
+    if ([title isEqualToString:NSLocalizedString(@"Download", NULL)])
     {
         ACDownloadManager *downloadManager = [[ACDownloadManager alloc] init];
         downloadManager.fileName = alertView.textField.text;
         
         NSString *title = alertView.textField.text;
-        ACAlertView *alertView = [ACAlertView alertWithTitle:title style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[@"Cancel", @"Hide"]];
+        ACAlertView *alertView = [ACAlertView alertWithTitle:title style:ACAlertViewStyleProgressView delegate:downloadManager buttonTitles:@[NSLocalizedString(@"Cancel", NULL), NSLocalizedString(@"Hide", NULL)]];
         [alertView show];
         [downloadManager downloadFileAtURL:requestURL];
     }

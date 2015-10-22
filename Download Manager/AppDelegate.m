@@ -70,18 +70,18 @@
 
     ACBrowserViewController *browserController = [[ACBrowserViewController alloc] init];
     UINavigationController *browserNavController = [[UINavigationController alloc] initWithRootViewController:browserController];
-    [browserNavController.navigationBar setTranslucent:NO];
-    browserNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Internet" image:[UIImage imageNamed:@"domain-50.png"] tag:0];
+    //[browserNavController.navigationBar setTranslucent:NO];
+    browserNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Internet", NULL) image:[UIImage imageNamed:@"domain-50.png"] tag:0];
     browserNavController.tabBarItem.selectedImage = [UIImage imageNamed:@"domain_filled-50.png"];
     
     ACSettingsTableViewController *settingsViewController = [[ACSettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
     UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
-    [settingsNavController.navigationBar setTranslucent:NO];
+    //[settingsNavController.navigationBar setTranslucent:NO];
     settingsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:2];
 
     downloadsViewController = [[CLDirectoryViewController alloc] init];
     UINavigationController *downloadsNavController = [[UINavigationController alloc] initWithRootViewController:downloadsViewController];
-    [downloadsNavController.navigationBar setTranslucent:NO];
+    //[downloadsNavController.navigationBar setTranslucent:NO];
     downloadsNavController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemDownloads tag:2];
     if (![[self allFeaturesUnlocked] boolValue])
     {
@@ -91,7 +91,7 @@
     
     ACiCloudViewController *iCloudViewController = [[ACiCloudViewController alloc] initWithDirectoryPath:[self iCloudPath]];
     UINavigationController *iCloudNavController = [[UINavigationController alloc] initWithRootViewController:iCloudViewController];
-    [iCloudNavController.navigationBar setTranslucent:NO];
+    //[iCloudNavController.navigationBar setTranslucent:NO];
     iCloudNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"iCloud" image:[UIImage imageNamed:@"cloud_storage-50.png"] tag:3];
     iCloudNavController.tabBarItem.selectedImage = [UIImage imageNamed:@"cloud_storage_filled-50.png"];
     if (![[self allFeaturesUnlocked] boolValue])
@@ -135,11 +135,13 @@
     [[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
     [[UITabBar appearance] setBarTintColor:SECONDARY_COLOR_1];
     [[UITabBar appearance] setTintColor:SECONDARY_COLOR_2];
-    [[UINavigationBar appearance] setTranslucent:NO];
-    [[UIToolbar appearance] setTranslucent:NO];
+    //[[UINavigationBar appearance] setTranslucent:NO];
+    //[[UIToolbar appearance] setTranslucent:NO];
     [[UIBarButtonItem appearance] setTintColor:SECONDARY_COLOR_2];
     [[ACTextField appearance] setTextFieldTintColor:TERTIARY_COLOR];
     [[UISwitch appearance] setOnTintColor:PRIMARY_COLOR];
+    [[CLFilterCell appearance] setSelectedLabelColor:PRIMARY_COLOR];
+    [[CLFilterCell appearance] setSelectedTextColor:SECONDARY_COLOR_2];
     
     [[UISlider appearance] setTintColor:SECONDARY_COLOR_1];
     [[UISlider appearance] setMinimumTrackTintColor:PRIMARY_COLOR];

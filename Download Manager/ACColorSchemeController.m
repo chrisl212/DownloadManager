@@ -15,6 +15,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     for (UIButton *button in self.view.subviews)
         if ([button isKindOfClass:[UIButton class]])
             button.tintColor = [UIColor blueColor];
@@ -45,6 +47,8 @@
     
     self.color4View.layer.borderColor = [UIColor blackColor].CGColor;
     self.color4View.layer.borderWidth = 1.0;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset" style:UIBarButtonItemStylePlain target:self action:@selector(reset)];
 }
 
 - (void)didReceiveMemoryWarning
@@ -59,7 +63,7 @@
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:color] forKey:key];
 }
 
-- (void)save:(id)sender
+- (void)save
 {
     [self setColorForKey:@"Color1" usingView:self.color1View];
     [self setColorForKey:@"Color2" usingView:self.color2View];
@@ -72,6 +76,7 @@
 - (void)adjustColor:(id)sender
 {
     self.selectedView.backgroundColor = [UIColor colorWithRed:self.redSlider.value green:self.greenSlider.value blue:self.blueSlider.value alpha:1.0];
+    [self save];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -92,7 +97,7 @@
     self.blueSlider.value = blue;
 }
 
-- (void)reset:(id)sender
+- (void)reset
 {
     double red1 = 170.0;
     double green1 = 57.0;

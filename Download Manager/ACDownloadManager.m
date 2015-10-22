@@ -60,11 +60,11 @@
         if (totalCount >= 3)
         {
             [self.alertView dismiss];
-            ACAlertView *alertView = [ACAlertView alertWithTitle:@"Unlock" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Cancel", @"Unlock"]];
-            alertView.textView.text = @"Maximum file limit reached. Select 'Unlock' to remove this limit.";
+            ACAlertView *alertView = [ACAlertView alertWithTitle:NSLocalizedString(@"Unlock", NULL) style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[NSLocalizedString(@"Cancel", NULL), NSLocalizedString(@"Unlock", NULL)]];
+            alertView.textView.text = NSLocalizedString(@"MaxFiles", NULL);
             [alertView showWithSelectionHandler:^(ACAlertView *alert, NSString *buttonTitle)
              {
-                 if ([buttonTitle isEqualToString:@"Unlock"])
+                 if ([buttonTitle isEqualToString:NSLocalizedString(@"Unlock", NULL)])
                  {
                      [[self appDelegate] unlockFeatures];
                      
@@ -134,8 +134,8 @@
         if (error)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
-                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
-                errorAlert.textView.text = [NSString stringWithFormat:@"Error creating iCloud directory - %@", error];
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:NSLocalizedString(@"Error", NULL) style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[NSLocalizedString(@"Close", NULL)]];
+                errorAlert.textView.text = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"iCloudDirError", NULL), error];
                 [errorAlert show];
             });
             return;
@@ -147,8 +147,8 @@
         if (error)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
-                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
-                errorAlert.textView.text = [NSString stringWithFormat:@"Error creating iCloud file in Documents directory - %@", error];
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:NSLocalizedString(@"Error", NULL) style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[NSLocalizedString(@"Close", NULL)]];
+                errorAlert.textView.text = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"iCloudFileError", NULL), error];
                 [errorAlert show];
             });
             return;
@@ -160,8 +160,8 @@
         if (error)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
-                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
-                errorAlert.textView.text = [NSString stringWithFormat:@"Error setting item as ubiquitous - %@", error];
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:NSLocalizedString(@"Error", NULL) style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[NSLocalizedString(@"Close", NULL)]];
+                errorAlert.textView.text = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"iCloudUbiqError", NULL), error];
                 if (error.code != 516) //this would show every time a file was redownloaded - annoying
                     [errorAlert show];
             });
@@ -172,8 +172,8 @@
         if (error)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
-                ACAlertView *errorAlert = [ACAlertView alertWithTitle:@"Error" style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[@"Close"]];
-                errorAlert.textView.text = [NSString stringWithFormat:@"Error removing iCloud directory - %@", error];
+                ACAlertView *errorAlert = [ACAlertView alertWithTitle:NSLocalizedString(@"Error", NULL) style:ACAlertViewStyleTextView delegate:nil buttonTitles:@[NSLocalizedString(@"Close", NULL)]];
+                errorAlert.textView.text = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"iCloudRemDirError", NULL), error];
                 [errorAlert show];
             });
         }
@@ -193,10 +193,15 @@
 
 - (void)alertView:(ACAlertView *)alertView didClickButtonWithTitle:(NSString *)title
 {
-    if ([title isEqualToString:@"Cancel"])
+    if ([title isEqualToString:NSLocalizedString(@"Cancel", NULL)])
     {
         [timeElapsedTimer invalidate];
         [self.connection cancel];
+        [alertView dismiss];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Hide", NULL)])
+    {
+        [alertView hide];
     }
 }
 

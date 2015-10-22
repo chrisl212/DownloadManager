@@ -23,8 +23,11 @@
 		631613961AB8FC76006EA71C /* ACSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 631613951AB8FC76006EA71C /* ACSettingsTableViewController.m */; };
 		6316139C1AB9035C006EA71C /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6316139B1AB9035C006EA71C /* Media.xcassets */; };
 		631613A01AB906CE006EA71C /* ACColorSchemeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6316139E1AB906CE006EA71C /* ACColorSchemeController.m */; };
-		631613A11AB906CE006EA71C /* ACColorSchemeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */; };
 		63F4FFD81AC35FE20058874B /* ACiCloudViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63F4FFD71AC35FE20058874B /* ACiCloudViewController.m */; };
+		AB06EE711BC9CF240022FF48 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB06EE741BC9CF240022FF48 /* Localizable.strings */; };
+		AB06EE721BC9CF240022FF48 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB06EE741BC9CF240022FF48 /* Localizable.strings */; };
+		AB06EE781BC9D5440022FF48 /* ACColorSchemeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB06EE7B1BC9D5440022FF48 /* ACColorSchemeController.xib */; };
+		AB06EE791BC9D5440022FF48 /* ACColorSchemeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB06EE7B1BC9D5440022FF48 /* ACColorSchemeController.xib */; };
 		AB12990B1BAE659A00BE84DB /* ACViewSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB12990A1BAE659A00BE84DB /* ACViewSelectViewController.m */; };
 		AB12990C1BAE659A00BE84DB /* ACViewSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB12990A1BAE659A00BE84DB /* ACViewSelectViewController.m */; };
 		AB1299131BAE77DF00BE84DB /* delete@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AB12990D1BAE77DF00BE84DB /* delete@3x.png */; };
@@ -102,7 +105,6 @@
 		AB6D491A1BAD176500C97E92 /* fast-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABBFBCD31B86393400A5453F /* fast-forward@2x.png */; };
 		AB6D491B1BAD176500C97E92 /* noart@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABBFBCF31B86407200A5453F /* noart@3x.png */; };
 		AB6D491C1BAD176500C97E92 /* Icon-60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABE40A481BA7C0720005C81A /* Icon-60@3x.png */; };
-		AB6D491D1BAD176500C97E92 /* ACColorSchemeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */; };
 		AB6D49201BAD176500C97E92 /* MimeTypes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 631612941AB8DDF4006EA71C /* MimeTypes.plist */; };
 		AB6D49211BAD176500C97E92 /* AppleIncRootCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = ABE40A3F1BA7B92D0005C81A /* AppleIncRootCertificate.cer */; };
 		AB6D49221BAD176500C97E92 /* DownloadTypes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 631612931AB8DDF4006EA71C /* DownloadTypes.plist */; };
@@ -240,6 +242,8 @@
 		ABE40A531BA7C0720005C81A /* Icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABE40A4A1BA7C0720005C81A /* Icon-76@2x.png */; };
 		ABE40A551BA7C0C30005C81A /* Icon-40.png in Resources */ = {isa = PBXBuildFile; fileRef = ABE40A541BA7C0C30005C81A /* Icon-40.png */; };
 		ABF435891B8997D1002D4557 /* transparency@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ABF435881B8997D1002D4557 /* transparency@2x.jpg */; };
+		ABF472311BC4953800B1A2FC /* CLFilterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABF472301BC4953800B1A2FC /* CLFilterCell.xib */; };
+		ABF472321BC4953800B1A2FC /* CLFilterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABF472301BC4953800B1A2FC /* CLFilterCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -292,10 +296,16 @@
 		6316139B1AB9035C006EA71C /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		6316139D1AB906CE006EA71C /* ACColorSchemeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACColorSchemeController.h; sourceTree = "<group>"; };
 		6316139E1AB906CE006EA71C /* ACColorSchemeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACColorSchemeController.m; sourceTree = "<group>"; };
-		6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ACColorSchemeController.xib; sourceTree = "<group>"; };
 		63F4FFD11AC35C340058874B /* Download Manager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Download Manager.entitlements"; sourceTree = "<group>"; };
 		63F4FFD61AC35FE20058874B /* ACiCloudViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACiCloudViewController.h; sourceTree = "<group>"; };
 		63F4FFD71AC35FE20058874B /* ACiCloudViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACiCloudViewController.m; sourceTree = "<group>"; };
+		AB06EE731BC9CF240022FF48 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AB06EE751BC9CF280022FF48 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AB06EE761BC9CF450022FF48 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		AB06EE771BC9CF450022FF48 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AB06EE7A1BC9D5440022FF48 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ACColorSchemeController.xib; sourceTree = "<group>"; };
+		AB06EE7D1BC9D5490022FF48 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ACColorSchemeController.strings; sourceTree = "<group>"; };
+		AB06EE7F1BC9D54D0022FF48 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ACColorSchemeController.strings; sourceTree = "<group>"; };
 		AB1299091BAE659A00BE84DB /* ACViewSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACViewSelectViewController.h; sourceTree = "<group>"; };
 		AB12990A1BAE659A00BE84DB /* ACViewSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACViewSelectViewController.m; sourceTree = "<group>"; };
 		AB12990D1BAE77DF00BE84DB /* delete@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@3x.png"; sourceTree = "<group>"; };
@@ -398,6 +408,7 @@
 		ABE40A4A1BA7C0720005C81A /* Icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-76@2x.png"; path = "Icons/Icon-76@2x.png"; sourceTree = SOURCE_ROOT; };
 		ABE40A541BA7C0C30005C81A /* Icon-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-40.png"; path = "Icons/Icon-40.png"; sourceTree = SOURCE_ROOT; };
 		ABF435881B8997D1002D4557 /* transparency@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "transparency@2x.jpg"; path = "../CLFileNavigator/CLFileNavigatorKit/transparency@2x.jpg"; sourceTree = "<group>"; };
+		ABF472301BC4953800B1A2FC /* CLFilterCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CLFilterCell.xib; path = ../CLFileNavigator/CLFileNavigatorKit/CLFilterCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -477,7 +488,7 @@
 				AB38E9C81B93CB9200F73C18 /* download@2x.png */,
 				6316139D1AB906CE006EA71C /* ACColorSchemeController.h */,
 				6316139E1AB906CE006EA71C /* ACColorSchemeController.m */,
-				6316139F1AB906CE006EA71C /* ACColorSchemeController.xib */,
+				AB06EE7B1BC9D5440022FF48 /* ACColorSchemeController.xib */,
 				6316129E1AB8E1C6006EA71C /* ACDownloadManager.h */,
 				6316129F1AB8E1C6006EA71C /* ACDownloadManager.m */,
 				6316129D1AB8DE86006EA71C /* File Types */,
@@ -493,6 +504,7 @@
 			children = (
 				631612681AB8D29A006EA71C /* Info.plist */,
 				631612691AB8D29A006EA71C /* main.m */,
+				AB06EE741BC9CF240022FF48 /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -607,6 +619,7 @@
 		ABBFBC861B84F93B00A5453F /* CLKit Resouces */ = {
 			isa = PBXGroup;
 			children = (
+				ABF472301BC4953800B1A2FC /* CLFilterCell.xib */,
 				ABDDF0401BB84714009C1C41 /* music@3x.png */,
 				ABDDF0411BB84714009C1C41 /* music@2x.png */,
 				ABDDF0421BB84714009C1C41 /* music.png */,
@@ -735,6 +748,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = 6316125B1AB8D295006EA71C;
 			productRefGroup = 631612651AB8D299006EA71C /* Products */;
@@ -774,6 +788,7 @@
 				ABE40A4B1BA7C0720005C81A /* Icon-29.png in Resources */,
 				AB6D4A6E1BAD2A1900C97E92 /* installing_updates-50@2x.png in Resources */,
 				AB6D4A8F1BAD30EB00C97E92 /* file-50.png in Resources */,
+				ABF472311BC4953800B1A2FC /* CLFilterCell.xib in Resources */,
 				ABE40A4E1BA7C0720005C81A /* Icon-40@2x.png in Resources */,
 				ABE40A371BA789840005C81A /* InAppPurchases.plist in Resources */,
 				AB6D4A6C1BAD2A1900C97E92 /* medium_icons-50@3x.png in Resources */,
@@ -817,11 +832,12 @@
 				AB38E9D71B94078B00F73C18 /* cloud_storage_filled-50@2x.png in Resources */,
 				ABBFBCDC1B86393400A5453F /* fast-forward@2x.png in Resources */,
 				ABBFBCF51B86407200A5453F /* noart@3x.png in Resources */,
+				AB06EE711BC9CF240022FF48 /* Localizable.strings in Resources */,
 				AB6D4A731BAD2F1300C97E92 /* rewind.png in Resources */,
 				AB6D4A951BAD30EB00C97E92 /* medium_icons-50.png in Resources */,
 				ABE40A511BA7C0720005C81A /* Icon-60@3x.png in Resources */,
 				AB1299191BAE77DF00BE84DB /* delete.png in Resources */,
-				631613A11AB906CE006EA71C /* ACColorSchemeController.xib in Resources */,
+				AB06EE781BC9D5440022FF48 /* ACColorSchemeController.xib in Resources */,
 				AB6D4A1A1BAD287A00C97E92 /* download@3x.png in Resources */,
 				631612961AB8DDF4006EA71C /* MimeTypes.plist in Resources */,
 				AB6D4AA81BAD316F00C97E92 /* download.png in Resources */,
@@ -876,6 +892,7 @@
 				AB6D49011BAD176500C97E92 /* Icon-29.png in Resources */,
 				AB6D4A6F1BAD2A1900C97E92 /* installing_updates-50@2x.png in Resources */,
 				AB6D4A901BAD30EB00C97E92 /* file-50.png in Resources */,
+				ABF472321BC4953800B1A2FC /* CLFilterCell.xib in Resources */,
 				AB6D49031BAD176500C97E92 /* Icon-40@2x.png in Resources */,
 				AB6D49041BAD176500C97E92 /* InAppPurchases.plist in Resources */,
 				AB6D4A6D1BAD2A1900C97E92 /* medium_icons-50@3x.png in Resources */,
@@ -919,11 +936,12 @@
 				AB6D49191BAD176500C97E92 /* cloud_storage_filled-50@2x.png in Resources */,
 				AB6D491A1BAD176500C97E92 /* fast-forward@2x.png in Resources */,
 				AB6D491B1BAD176500C97E92 /* noart@3x.png in Resources */,
+				AB06EE721BC9CF240022FF48 /* Localizable.strings in Resources */,
 				AB6D4A741BAD2F1300C97E92 /* rewind.png in Resources */,
 				AB6D4A961BAD30EB00C97E92 /* medium_icons-50.png in Resources */,
 				AB6D491C1BAD176500C97E92 /* Icon-60@3x.png in Resources */,
 				AB12991A1BAE77DF00BE84DB /* delete.png in Resources */,
-				AB6D491D1BAD176500C97E92 /* ACColorSchemeController.xib in Resources */,
+				AB06EE791BC9D5440022FF48 /* ACColorSchemeController.xib in Resources */,
 				AB6D4A1B1BAD287A00C97E92 /* download@3x.png in Resources */,
 				AB6D49201BAD176500C97E92 /* MimeTypes.plist in Resources */,
 				AB6D4AA91BAD316F00C97E92 /* download.png in Resources */,
@@ -996,8 +1014,29 @@
 			isa = PBXVariantGroup;
 			children = (
 				631612771AB8D29E006EA71C /* Base */,
+				AB06EE761BC9CF450022FF48 /* de */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		AB06EE741BC9CF240022FF48 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AB06EE731BC9CF240022FF48 /* Base */,
+				AB06EE751BC9CF280022FF48 /* en */,
+				AB06EE771BC9CF450022FF48 /* de */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		AB06EE7B1BC9D5440022FF48 /* ACColorSchemeController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AB06EE7A1BC9D5440022FF48 /* Base */,
+				AB06EE7D1BC9D5490022FF48 /* en */,
+				AB06EE7F1BC9D54D0022FF48 /* de */,
+			);
+			name = ACColorSchemeController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

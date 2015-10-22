@@ -1,0 +1,42 @@
+/* 
+  Localizable.strings
+  Download Manager
+
+  Created by Christopher Loonam on 10/10/15.
+  Copyright (c) 2015 A and C Studios. All rights reserved.
+*/
+
+"No" = "No";
+"Yes" = "Yes";
+"Redownload" = "Re-download file";
+"RedownloadBody" = "Re-download this file to your downloads directory?";
+"Error" = "Error";
+"Close" = "Close";
+"Dismiss" = "Dismiss";
+"Cancel" = "Cancel";
+"Hide" = "Hide";
+"Internet" = "Internet";
+"Download" = "Download";
+"Open" = "Open";
+"Copy" = "Copy";
+"SaveAs" = "Save as...";
+"EnterAddressSearch" = "Enter address or search";
+"DownloadableTypes" = "Downloadable Types";
+"AddToCloud" = "Add to iCloud";
+"Thumbnails" = "Thumbnails";
+"Dates" = "Dates";
+"ClearCache" = "Clear Cache";
+"ColorScheme" = "Color Scheme";
+"Homepage" = "Homepage";
+"SearchEngine" = "Search Engine";
+"Contact" = "Contact";
+"UnlockFeatures" = "Unlock all features";
+"Settings" = "Settings";
+"Creation" = "Creation";
+"Modification" = "Modification";
+"Unlock" = "Unlock";
+"MaxFiles" = "Maximum file limit reached. Select 'Unlock' to remove this limit.";
+"iCloudDirError" = "Error creating iCloud directory";
+"iCloudFileError" = "Error creating iCloud file in Documents directory";
+"iCloudUbiqError" = "Error setting item as ubiquitous";
+"iCloudRemDirError" = "Error removing iCloud directory";
